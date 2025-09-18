@@ -1,7 +1,7 @@
 @import "tailwindcss";
 @layer components{
     .detailBox{
-        @apply flex p-4 rounded-lg shadow-md w-40 lg:w-50
+        @apply flex p-4 rounded-lg shadow-md w-35 lg:w-50
         bg-white
         ring-2 ring-gray-300;
     }
