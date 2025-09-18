@@ -6,8 +6,8 @@ import stockIcon from "../assets/Stock.svg";
 function OverViewBox() {
     return (
         <div className="p-4 m-4 bg-white rounded-lg shadow-md lg:ml-72">
-            <h2 className="text-2xl font-bold mb-4 ml-4">Overview</h2>
-            <div className="flex justify-start items-center flex-wrap gap-8 ml-10 ">
+            <h2 className="text-2xl font-bold mb-4 ml-2 lg:ml-4">Overview</h2>
+            <div className="container">
                 <div className="detailBox ">
                     <div className="iconBox ">
                         <img src={productIcon} alt="" />
