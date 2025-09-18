@@ -1,7 +1,7 @@
 import "./components.css";
 import productIcon from "../assets/product.svg";
 import orderIcon from "../assets/orders.svg";
-import outofstockIcon from "../assets/outofstock.svg";
+import outofstockIcon from "../assets/stockWarning.svg";
 import stockIcon from "../assets/stock.svg";
 function OverViewBox() {
     return (
