@@ -64,7 +64,7 @@ const Menu = () => {
                     {menuItems.map((item) => (
                         <button
                             key={item.name}
-                            onClick={() => setOpen(false)} className="flex w-full p-2 rounded-md gap-2 bg-blue-200 justify-center hover:bg-gray-300"   >
+                            onClick={() => setOpen(false)} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300"   >
                             <img src={item.icon} alt="" />{item.name}
                         </button>
                     ))}
