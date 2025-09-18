@@ -40,7 +40,7 @@ const Menu = () => {
 
             {/* Overlay - only on small/medium screens */}
             <div
-                className={`fixed inset-0 h-screen bg-black bg-opacity-10 transition-opacity duration-300 z-40 ${open ? "opacity-10 pointer-events-auto" : "opacity-0 pointer-events-none"} lg:hidden`}
+                className={`fixed inset-0 h-screen bg-black bg-opacity-10 transition-opacity duration-300 z-40 ${open ? "opacity-50 pointer-events-auto" : "opacity-0 pointer-events-none"} lg:hidden`}
                 onClick={() => setOpen(false)}
             />
 
