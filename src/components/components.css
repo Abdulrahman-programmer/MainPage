@@ -9,7 +9,7 @@
         ring-2 ring-gray-300;
     }
     .iconBox{
-        @apply bg-blue-200 p-2 rounded-md w-15 h-15
+        @apply bg-blue-200 p-2 rounded-md h-10 w-10 lg:h-15 lg:w-15
         flex justify-center items-center text-blue-600 text-xl;
     }
     .values{

@@ -10,7 +10,7 @@ function OverViewBox() {
             <div className="container">
                 <div className="detailBox ">
                     <div className="iconBox ">
-                        <img src={productIcon} alt="" />
+                        <img src={productIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values">
                         <p className="text-2xl font-bold">3562</p>
@@ -19,7 +19,7 @@ function OverViewBox() {
                 </div>
                 <div className="detailBox ">
                     <div className="iconBox ">
-                        <img src={stockIcon} alt="" />
+                        <img src={stockIcon} alt=""className="w-full" />
                     </div>
                     <div className="values">
                         <p className="text-2xl font-bold">4125</p>
@@ -28,18 +28,18 @@ function OverViewBox() {
                 </div>
                 <div className="detailBox ">
                     <div className="iconBox ">
-                        <img src={orderIcon} alt="" />
+                        <img src={orderIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values">
                         <p className="text-2xl font-bold">1352</p>
                         <p>Total Orders</p>
                     </div>
                 </div>
-                <div className="detailBox ">
-                    <div className="iconBox ">
-                        <img src={outofstockIcon} alt="" />
+                <div className="detailBox  bg-red-400/20 ring-red-300/50">
+                    <div className="iconBox bg-red-200">
+                        <img src={outofstockIcon} alt="" className="w-full"/>
                     </div>
-                    <div className="values">
+                    <div className="values text-red-500/50">
                         <p className="text-2xl font-bold">245</p>
                         <p>Out Of Stock</p>
                     </div>
