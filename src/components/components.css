@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@layer components{
+    .detailBox{
+        @apply flex p-4 rounded-lg shadow-md w-40 lg:w-50
+        bg-white
+        ring-2 ring-gray-300;
+    }
+    .iconBox{
+        @apply bg-blue-200 p-2 rounded-md h-10 w-10 flex justify-center items-center text-blue-600 text-xl;
+    }
+    .values{
+        @apply ml-4
+    }
+}

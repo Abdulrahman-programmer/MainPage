@@ -28,7 +28,7 @@ const Menu = () => {
     const profileIcon = "https://imgs.search.brave.com/0w706iazLuiZA7_266Xh7P1rBBHA32banx87yLoT5ZI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzY2L2Zm/L2NiLzY2ZmZjYjU2/NDgyYzY0YmRmNmI2/MDEwNjg3OTM4ODM1/LmpwZw";
     const profile = "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
     return (
-        <div>
+        <div className="bg-blue-950">
             {/* Menu Button - hidden on large screens */}
             <button
                 onClick={() => setOpen(!open)}
@@ -47,7 +47,7 @@ const Menu = () => {
             {/* Sliding Menu */}
             <nav
                 className={`
-                    fixed top-0 left-0 h-screen w-64 bg-white shadow-lg z-50
+                    fixed top-0 left-0 h-screen w-64 bg-blue-950 shadow-lg z-50
                     transform transition-transform duration-300
                     ${open ? "translate-x-0" : "-translate-x-full"}
                     lg:translate-x-0  lg:shadow-none
@@ -56,15 +56,15 @@ const Menu = () => {
             >
                 <div className=" w-full ">
                     <img src={profile} alt={profileIcon} className="rounded-full h-30 w-30 m-auto mt-10 mb-2 ring-1 ring-gray-400 shadow-2xl" />
-                    <p className="text-xl text-center">{name}</p>
-                    <p className="text-xs text-center text-gray-500">{email}</p>
+                    <p className="text-xl text-center text-white">{name}</p>
+                    <p className="text-xs text-center text-gray-300">{email}</p>
                 </div>
 
                 <ul className="mt-5 lg:mt-8 space-y-2 px-6 flex flex-col">
                     {menuItems.map((item) => (
                         <button
                             key={item.name}
-                            onClick={() => setOpen(false)} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300"   >
+                            onClick={() => setOpen(false)} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >
                             <img src={item.icon} alt="" />{item.name}
                         </button>
                     ))}
