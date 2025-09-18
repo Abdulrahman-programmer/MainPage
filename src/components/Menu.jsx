@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import menuIcon from '../assets/menu.svg';
 import inventoryIcon from '../assets/inventory.svg';
 import dashboardIcon from '../assets/dashboard.svg';
-import lowstockIcon from '../assets/lowstock.svg';
+import lowstockIcon from '../assets/lowStock.svg';
 import reportIcon from '../assets/report.svg';
 import salesIcon from '../assets/sales.svg';
 import settingIcon from '../assets/setting.svg';
