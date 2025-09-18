@@ -32,7 +32,7 @@ const Menu = () => {
             {/* Menu Button - hidden on large screens */}
             <button
                 onClick={() => setOpen(!open)}
-                className="fixed top-4 left-0 z-150 bg-white rounded-full shadow p-2 focus:outline-none lg:h-0 lg:w-0 lg:p-0 lg:invisible"
+                className="fixed top-4 left-0 z-150 bg-white rounded-full shadow-[0_0_10px_rbga(0,0,0,0.25)] p-2 focus:outline-none lg:h-0 lg:w-0 lg:p-0 lg:invisible"
             >
                 <img src={icon} alt="Menu Icon" className="w-8 h-8" />
             </button>
