@@ -2,7 +2,7 @@ import "./components.css";
 import productIcon from "../assets/product.svg";
 import orderIcon from "../assets/orders.svg";
 import outofstockIcon from "../assets/stockWarning.svg";
-import stockIcon from "../assets/stock.svg";
+import stockIcon from "../assets/Stock.svg";
 function OverViewBox() {
     return (
         <div className="p-4 m-4 bg-white rounded-lg shadow-md lg:ml-72">
