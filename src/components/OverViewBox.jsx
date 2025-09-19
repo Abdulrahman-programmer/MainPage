@@ -13,8 +13,8 @@ function OverViewBox() {
                         <img src={productIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values">
-                        <p className="text-2xl font-bold">3562</p>
-                        <p>Total Products</p>
+                        <p className="text-xl font-bold lg:text-2xl">3562</p>
+                        <p className="text-xs lg:text-base">Total Products</p>
                     </div>
                 </div>
                 <div className="detailBox ">
@@ -22,8 +22,8 @@ function OverViewBox() {
                         <img src={stockIcon} alt=""className="w-full" />
                     </div>
                     <div className="values">
-                        <p className="text-2xl font-bold">4125</p>
-                        <p>Total Stock</p>
+                        <p className="text-xl font-bold lg:text-2xl">4125</p>
+                        <p className="text-xs lg:text-base">Total Stock</p>
                     </div>
                 </div>
                 <div className="detailBox ">
@@ -31,8 +31,8 @@ function OverViewBox() {
                         <img src={orderIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values">
-                        <p className="text-2xl font-bold">1352</p>
-                        <p>Total Orders</p>
+                        <p className="text-xl font-bold lg:text-2xl">1352</p>
+                        <p className="text-xs lg:text-base">Total Orders</p>
                     </div>
                 </div>
                 <div className="detailBox  bg-red-400/20 ring-red-300/50">
@@ -40,8 +40,8 @@ function OverViewBox() {
                         <img src={outofstockIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values text-red-500/50">
-                        <p className="text-2xl font-bold">245</p>
-                        <p>Out Of Stock</p>
+                        <p className="text-xl font-bold lg:text-2xl">245</p>
+                        <p className="text-xs lg:text-base">Out Of Stock</p>
                     </div>
                 </div>
 

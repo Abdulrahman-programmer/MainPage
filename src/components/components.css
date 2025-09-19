@@ -1,10 +1,10 @@
 @import "tailwindcss";
 @layer components{
     .container{
-        @apply flex justify-start items-center flex-wrap gap-4 ml-5 lg:ml-10 lg:gap-10 
+        @apply flex justify-start items-center flex-wrap gap-4 ml-5 lg:ml-10 lg:gap-10 pr-3.5
     }
     .detailBox{
-        @apply flex p-4 rounded-lg shadow-md w-35 lg:w-55
+        @apply flex p-4 rounded-lg shadow-md w-35 md:w-55
         bg-white
         ring-2 ring-gray-300;
     }
