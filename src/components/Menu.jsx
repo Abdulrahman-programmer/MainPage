@@ -8,10 +8,11 @@ import salesIcon from '../assets/sales.svg';
 import settingIcon from '../assets/setting.svg';
 import logoutIcon from '../assets/logout.svg';
 import closeIcon from '../assets/close.svg';
-
+import Dashboard from "../Pages/Dashboard";
+import { useNavigate } from "react-router-dom";
 
 const menuItems = [
-    { name: "Dashboard", link: "#", icon: dashboardIcon },
+    { name: "Dashboard", link: "#", icon: dashboardIcon , Element:<Dashboard/>},
     { name: "Inventory", link: "#", icon: inventoryIcon },
     { name: "Sales", link: "#", icon: salesIcon },
     { name: "Report", link: "#", icon: reportIcon },
@@ -21,6 +22,7 @@ const menuItems = [
 ];
 
 const Menu = () => {
+    const navigate = useNavigate();
     const [open, setOpen] = useState(false);
     const icon = open ? closeIcon : menuIcon;
     const name = "Shruti kumari";
@@ -66,7 +68,7 @@ const Menu = () => {
                     {menuItems.map((item) => (
                         <button
                             key={item.name}
-                            onClick={() => setOpen(false)} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >
+                            onClick={() =>{ setOpen(false); navigate('/')}} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >
                             <img src={item.icon} alt="" />{item.name}
                         </button>
                     ))}

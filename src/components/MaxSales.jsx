@@ -70,7 +70,7 @@ scales: {
 };
 
 const MaxSales = () => (
-<div className="chartBox">
+<div className="chartBox ">
     <Bar data={data} options={options} />
 </div>
 );

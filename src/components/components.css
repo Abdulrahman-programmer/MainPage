@@ -16,7 +16,7 @@
         @apply ml-4
     }
     .chartBox{
-        @apply p-4 m-4 bg-white rounded-lg shadow-md lg:w-full lg:h-96 
+        @apply p-4 bg-white rounded-lg shadow-md h-100 lg:w-1/2 lg:flex-grow lg:h-96 
         flex justify-center items-center
     }
 }

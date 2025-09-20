@@ -55,7 +55,7 @@ scales: {
 };
 
 const BestSellers = () => (
-<div  className="chartBox">
+<div  className="chartBox ">
     <Bar data={data} options={options} />
 </div>
 );

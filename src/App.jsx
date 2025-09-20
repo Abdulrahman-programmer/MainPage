@@ -2,10 +2,13 @@ import { useState } from 'react'
 import Menu from './components/Menu'
 import './App.css'
 import Header from './components/Header'
-import OverViewBox from './components/OverViewBox'
-import Greeting from './components/Greeting'
-import MaxSales from './components/MaxSales'
-import BestSellers from './components/BestSellers'
+import Dashboard from './Pages/Dashboard'
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  useNavigate
+} from "react-router-dom";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -13,13 +16,13 @@ function App() {
   return (
     <div>
       <Header />
+      
+      <BrowserRouter>
       <Menu />
-      <Greeting name={"Shruti"} />
-      <OverViewBox />
-      <div className='flex flex-col  lg:ml-70 lg:flex-row'>
-        <BestSellers />
-        <MaxSales />
-      </div>
+        <Routes>
+          <Route path='/' element={<Dashboard />} />
+        </Routes>
+      </BrowserRouter>
 
 
     </div>
