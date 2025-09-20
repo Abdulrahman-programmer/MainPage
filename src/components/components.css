@@ -15,4 +15,8 @@
     .values{
         @apply ml-4
     }
+    .chartBox{
+        @apply p-4 m-4 bg-white rounded-lg shadow-md lg:w-full lg:h-96 
+        flex justify-center items-center
+    }
 }

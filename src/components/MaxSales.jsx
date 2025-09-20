@@ -70,7 +70,7 @@ scales: {
 };
 
 const MaxSales = () => (
-<div className="p-4 m-4 bg-white rounded-lg shadow-md lg:ml-72 flex justify-center">
+<div className="chartBox">
     <Bar data={data} options={options} />
 </div>
 );
