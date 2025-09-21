@@ -8,16 +8,15 @@ import salesIcon from '../assets/sales.svg';
 import settingIcon from '../assets/setting.svg';
 import logoutIcon from '../assets/logout.svg';
 import closeIcon from '../assets/close.svg';
-import Dashboard from "../Pages/Dashboard";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const menuItems = [
-    { name: "Dashboard", link: "#", icon: dashboardIcon , Element:<Dashboard/>},
-    { name: "Inventory", link: "#", icon: inventoryIcon },
-    { name: "Sales", link: "#", icon: salesIcon },
-    { name: "Report", link: "#", icon: reportIcon },
-    { name: "LowStock", link: "#", icon: lowstockIcon },
-    { name: "Setting", link: "#", icon: settingIcon },
+    { name: "Dashboard", link: "/", icon: dashboardIcon},
+    { name: "Inventory", link: "/Inventory", icon: inventoryIcon },
+    { name: "Sales", link: "/sales", icon: salesIcon },
+    { name: "Report", link: "/report", icon: reportIcon },
+    { name: "LowStock", link: "/lowstock", icon: lowstockIcon },
+    { name: "Setting", link: "/setting", icon: settingIcon },
     { name: "Logout", link: "#", icon: logoutIcon },
 ];
 
@@ -66,11 +65,13 @@ const Menu = () => {
 
                 <ul className="mt-5 lg:mt-8 space-y-2 px-6 flex flex-col">
                     {menuItems.map((item) => (
+                        <Link to={item.link} key={item.name}>      
                         <button
                             key={item.name}
-                            onClick={() =>{ setOpen(false); navigate('/')}} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >
+                            onClick={() =>{ setOpen(false)}} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >
                             <img src={item.icon} alt="" />{item.name}
                         </button>
+                        </Link>
                     ))}
                 </ul>
             </nav>

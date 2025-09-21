@@ -1,8 +1,8 @@
 import { useState } from 'react'
-import Menu from './components/Menu'
 import './App.css'
-import Header from './components/Header'
-import Dashboard from './Pages/Dashboard'
+import After_logIn from './Pages/Afterlogin'
+import Before_logIn from './Pages/BeforelogIn'
+
 import {
   BrowserRouter,
   Routes,
@@ -11,20 +11,15 @@ import {
 } from "react-router-dom";
 
 function App() {
-  const [count, setCount] = useState(0)
 
   return (
     <div>
-      <Header />
-      
       <BrowserRouter>
-      <Menu />
-        <Routes>
-          <Route path='/' element={<Dashboard />} />
-        </Routes>
+      <Routes>
+        <Route path='/' element={<Before_logIn />} />
+        <Route path='/afterlogin' element={<After_logIn />} />
+      </Routes>
       </BrowserRouter>
-
-
     </div>
   )
 }
