@@ -40,7 +40,7 @@ function SignUp(params) {
                 Already have an account?
                 <button
                     className="text-blue-500 pl-1 hover:underline"
-                    onClick={params.openSignup}
+                    onClick={params.openLogin}
                 >
                     Login
                 </button>

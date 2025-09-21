@@ -16,7 +16,9 @@ function Before_logIn() {
            openSignup ={() => setLoginOrSignUp('signup')}/>
            <Intro openSignup ={() => setLoginOrSignUp('signup')}/>
            {islogin && <Login close = {()=> setLoginOrSignUp(null)} openSignup ={() => setLoginOrSignUp('signup')}/>}
-           {isSignup && <SignUp close = {() => setLoginOrSignUp(null)}/>}
+           {isSignup && <SignUp
+            close = {() => setLoginOrSignUp(null)}
+            openLogin = {() => {setLoginOrSignUp('login')}}/>}
           <div
                 className={`fixed inset-0 h-screen bg-black bg-opacity-100 
                     transition-opacity duration-300 z-10 ${loginOrSignUp ? "opacity-50 pointer-events-auto " : "opacity-0 pointer-events-none"} `}
