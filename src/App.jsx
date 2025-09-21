@@ -1,27 +1,32 @@
-import { useState } from 'react'
-import './App.css'
-import After_logIn from './Pages/Afterlogin'
-import Before_logIn from './Pages/BeforelogIn'
-
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  useNavigate
-} from "react-router-dom";
+// App.js
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Before_logIn from './Pages/BeforelogIn';
+import After_logIn from './Pages/Afterlogin';
+import Dashboard from './Pages/Dashboard';
+import Inventory from './Pages/Inventory';
+import Sales from './Pages/Sales';
+import Report from './Pages/Report';
+import LowStock from './Pages/LowStock';
+import Setting from './Pages/Setting';
 
 function App() {
-
   return (
-    <div>
-      <BrowserRouter>
+    <BrowserRouter>
       <Routes>
-        <Route path='/' element={<Before_logIn />} />
-        <Route path='/afterlogin' element={<After_logIn />} />
+        <Route path="/" element={<Before_logIn />} />
+
+        {/* Parent route with children */}
+        <Route path="/afterlogin" element={<After_logIn />}>
+          <Route index element={<Dashboard />} />   {/* /afterlogin */}
+          <Route path="inventory" element={<Inventory />} />   {/* /afterlogin/inventory */}
+          <Route path="sales" element={<Sales />} />           {/* /afterlogin/sales */}
+          <Route path="report" element={<Report />} />         {/* /afterlogin/report */}
+          <Route path="lowstock" element={<LowStock />} />     {/* /afterlogin/lowstock */}
+          <Route path="setting" element={<Setting />} />       {/* /afterlogin/setting */}
+        </Route>
       </Routes>
-      </BrowserRouter>
-    </div>
-  )
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;

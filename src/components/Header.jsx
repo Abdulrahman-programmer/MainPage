@@ -1,6 +1,6 @@
 import Logo from '../assets/logo.png';
 import Login_btn from './loginbar';
-import Login from './Login';
+
 
 function Header(params) {
   

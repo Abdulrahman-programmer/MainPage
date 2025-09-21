@@ -1,27 +1,28 @@
 import React, { useState } from "react";
-import menuIcon from '../assets/menu.svg';
-import inventoryIcon from '../assets/inventory.svg';
+import { Link } from "react-router-dom";
 import dashboardIcon from '../assets/dashboard.svg';
-import lowstockIcon from '../assets/lowStock.svg';
-import reportIcon from '../assets/report.svg';
+import inventoryIcon from '../assets/inventory.svg';
 import salesIcon from '../assets/sales.svg';
+import reportIcon from '../assets/report.svg';
+import lowstockIcon from '../assets/lowStock.svg';
 import settingIcon from '../assets/setting.svg';
 import logoutIcon from '../assets/logout.svg';
+import menuIcon from '../assets/menu.svg';
 import closeIcon from '../assets/close.svg';
-import { Link, useNavigate } from "react-router-dom";
+
 
 const menuItems = [
-    { name: "Dashboard", link: "/", icon: dashboardIcon},
-    { name: "Inventory", link: "/Inventory", icon: inventoryIcon },
-    { name: "Sales", link: "/sales", icon: salesIcon },
-    { name: "Report", link: "/report", icon: reportIcon },
-    { name: "LowStock", link: "/lowstock", icon: lowstockIcon },
-    { name: "Setting", link: "/setting", icon: settingIcon },
-    { name: "Logout", link: "#", icon: logoutIcon },
+  { name: "Dashboard", link: ".", icon: dashboardIcon },
+  { name: "Inventory", link: "inventory", icon: inventoryIcon },
+  { name: "Sales", link: "sales", icon: salesIcon },
+  { name: "Report", link: "report", icon: reportIcon },
+  { name: "LowStock", link: "lowstock", icon: lowstockIcon },
+  { name: "Setting", link: "setting", icon: settingIcon },
+  { name: "Logout", link: "/", icon: logoutIcon }, // redirect to before login
 ];
 
 const Menu = () => {
-    const navigate = useNavigate();
+    
     const [open, setOpen] = useState(false);
     const icon = open ? closeIcon : menuIcon;
     const name = "Shruti kumari";
@@ -65,7 +66,8 @@ const Menu = () => {
 
                 <ul className="mt-5 lg:mt-8 space-y-2 px-6 flex flex-col">
                     {menuItems.map((item) => (
-                        <Link to={item.link} key={item.name}>      
+                        <Link to={item.link}
+                         key={item.name}>      
                         <button
                             key={item.name}
                             onClick={() =>{ setOpen(false)}} className="flex w-full py-2 rounded-md gap-2 bg-blue-200  px-12 hover:bg-gray-300 hover:scale-110 transition-all duration-300"   >

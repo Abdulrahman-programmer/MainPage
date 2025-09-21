@@ -8,6 +8,10 @@ function Login(params) {
 
     const navigate = useNavigate();
     const [visibility, setVisiblity] = useState("password");
+    const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/afterlogin');
+  };
     return (
         <div className="box" >
             <div className="fixed ml-105 mt-1.5 my-0" onClick={() => {params.close()}}>
@@ -28,9 +32,7 @@ function Login(params) {
                         className="mr-1.5 "
                     /> <p className="inline text-gray-500 ">show password</p>
                 </div>
-                <input type="submit" value="Login" className="btn mt-10" onClick={() => {
-                    navigate('/afterlogin');
-                }} />
+                <input type="submit" value="Login" className="btn mt-10" onClick={handleSubmit}/>
 
             </form>
             <p className="pb-10 text-center">
