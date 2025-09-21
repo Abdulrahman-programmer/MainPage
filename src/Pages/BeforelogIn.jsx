@@ -20,7 +20,7 @@ function Before_logIn() {
           <div
                 className={`fixed inset-0 h-screen bg-black bg-opacity-100 
                     transition-opacity duration-300 z-10 ${loginOrSignUp ? "opacity-50 pointer-events-auto " : "opacity-0 pointer-events-none"} `}
-                
+                onClick={() => setLoginOrSignUp(null)}
             />
         </div>
     )
