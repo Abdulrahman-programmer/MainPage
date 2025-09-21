@@ -24,6 +24,7 @@ function App() {
           <Route path="lowstock" element={<LowStock />} />     {/* /afterlogin/lowstock */}
           <Route path="setting" element={<Setting />} />       {/* /afterlogin/setting */}
         </Route>
+        
       </Routes>
     </BrowserRouter>
   );
