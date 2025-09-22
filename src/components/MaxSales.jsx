@@ -37,6 +37,9 @@ datasets: [
         label: "Max Sold Item",
         data: salesData.map((d) => d.sold),
         backgroundColor: "rgba(6, 57, 135, 1)",
+        borderRadius: 5,
+        barThickness: 10,
+        
     },
 ],
 };
