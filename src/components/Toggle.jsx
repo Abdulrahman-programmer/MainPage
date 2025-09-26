@@ -4,7 +4,7 @@ import daylogo from '../assets/day.svg'
 import nightlogo from '../assets/dark.svg'
 
 function Toggle_btn(params) {
-    const [theme, setTheme] = React.useState('day');    
+    const [theme, setTheme] = React.useState(()=>{document.body.getAttribute('data-theme') || 'day'});   
     function changeBodyAttribute(attr, value) {
         document.body.setAttribute(attr, value);
     }   

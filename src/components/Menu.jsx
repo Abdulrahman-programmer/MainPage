@@ -10,7 +10,7 @@ import logoutIcon from '../assets/logout.svg';
 import menuIcon from '../assets/menu.svg';
 import closeIcon from '../assets/close.svg';
 import "./components.css";
-import Toggle_btn from "./Toggle";
+import DarkModeToggle from "./Btn-toggle";
 
 
 const menuItems = [
@@ -59,13 +59,15 @@ const Menu = () => {
                     lg:translate-x-0  lg:shadow-none dark:bg-gray-800
                     
                 `}
-            >
+            > { /* Profile Section */}
+                    <DarkModeToggle islogin ={true}/>
                 <div className=" w-full ">
                     <img src={profile} alt={profileIcon} className="rounded-full h-30 w-30 m-auto mt-10 mb-2 ring-1 ring-gray-400 shadow-2xl" />
                     <p className="text-xl text-center text-white">{name}</p>
                     <p className="text-xs text-center text-gray-300">{email}</p>
                 </div>
-
+                
+                    {/* Menu Items */}
                 <ul className="mt-5 lg:mt-8 space-y-2 px-6 flex flex-col">
                     {menuItems.map((item) => (
                         <Link to={item.link}
@@ -78,7 +80,7 @@ const Menu = () => {
                         </Link>
                     ))}
                 </ul>
-                <Toggle_btn islogin = {true}/>
+               
             </nav>
         </div>
     );
