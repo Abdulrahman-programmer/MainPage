@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function DarkModeToggle() {
+export default function DarkModeToggle({islogin}) {
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "day";
     const saved = localStorage.getItem("theme");
@@ -30,7 +30,8 @@ export default function DarkModeToggle() {
       onClick={toggleTheme}
       aria-pressed={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="relative w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none "
+      className={` w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none 
+        ${islogin ? "fixed top-5 right-2.5" : "relative" }`}
     >
       <motion.div
         layout
