@@ -30,7 +30,7 @@ export default function DarkModeToggle() {
       onClick={toggleTheme}
       aria-pressed={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className="relative w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+      className="relative w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none "
     >
       <motion.div
         layout
