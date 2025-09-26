@@ -1,8 +1,11 @@
 @import "tailwindcss";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+*{
+  font-family:Arial, Helvetica, sans-serif;
+}
 @layer base{
   *{
-    @apply font-arial transition-colors transition-all duration-300 ease-in-out;
+    @apply  transition-colors transition-all duration-300 ease-in-out;
   }
   body {
     @apply bg-blue-200 text-black overflow-x-hidden box-border
