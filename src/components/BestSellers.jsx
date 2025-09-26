@@ -31,7 +31,7 @@ datasets: [
         label: "Units Sold",
         data: [120, 110, 105, 98, 95, 90, 85, 80, 75, 70],
         backgroundColor: "rgba(6, 57, 135, 1)",
-        borderRadius: 5,
+        borderRadius: 8,
         
         
     },

@@ -1,6 +1,12 @@
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @layer base{
+  *{
+    @apply transition-colors transition-all duration-300 ease-in-out;
+  }
   body {
-    @apply bg-blue-200 text-black overflow-x-hidden box-border;
+    @apply bg-blue-200 text-black overflow-x-hidden box-border
+    dark:bg-gray-900
+    dark:text-white;
   }
 }

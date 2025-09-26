@@ -24,15 +24,15 @@ function Login(params) {
         />
       </div>
 
-      <h1 className="text-5xl pt-10 text-gray-700 text-center">Login</h1>
+      <h1 className="text-5xl pt-10 text-gray-700 text-center dark:text-gray-200">Login</h1>
 
       <form onSubmit={handleSubmit} method="post" className="flex flex-col p-10 pb-5">
         {/* Email */}
-        <label htmlFor="email" className="text-gray-500">Email</label>
+        <label htmlFor="email" className="label">Email</label>
         <input type="email" name="email" id="email" required className="ip" />
 
         {/* Password */}
-        <label htmlFor="password" className="text-gray-500">Password</label>
+        <label htmlFor="password" className="label">Password</label>
         <input
           type={visibility}
           name="password"
@@ -43,7 +43,7 @@ function Login(params) {
         />
 
         {/* Show password toggle */}
-        <label className="flex items-center mt-2 text-gray-500 cursor-pointer">
+        <label className="flex items-center mt-2 label cursor-pointer">
           <input
             type="checkbox"
             onChange={(e) => setVisibility(e.target.checked ? "text" : "password")}
@@ -57,10 +57,10 @@ function Login(params) {
       </form>
 
       {/* Register link */}
-      <p className="pb-10 text-center text-gray-700">
+      <p className="pb-10 text-center text-gray-700 dark:text-gray-300">
         Don't have an account?
         <button
-          className="text-blue-500 pl-1 hover:underline"
+          className="text-blue-500 pl-1 hover:underline dark:text-blue-700"
           onClick={params.openSignup}
         >
           Register

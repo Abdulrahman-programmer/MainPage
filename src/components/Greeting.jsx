@@ -14,7 +14,7 @@ function Greeting({name}) {
     }, []);
 
     return (
-        <div className="greeting p-5 lg:p-10 lg:ml-72 bg-white rounded-lg shadow-md mt-2.5 mx-4">
+        <div className="greeting p-5 lg:p-10 lg:ml-72 bg-white rounded-lg shadow-md mt-2.5 mx-4 dark:bg-gray-800 dark:text-white">
             <h1 className="text-2xl text-center lg:text-4xl font-bold">
                 {displayedText}
                 <span className="animate-pulse">|</span>
