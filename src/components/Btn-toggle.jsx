@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function DarkModeToggle(params) {
+export default function DarkModeToggle() {
   const [theme, setTheme] = useState(() => {
     if (typeof window === "undefined") return "day";
     const saved = localStorage.getItem("theme");
@@ -30,7 +30,7 @@ export default function DarkModeToggle(params) {
       onClick={toggleTheme}
       aria-pressed={isDark}
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className={`relative  w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none ${params.islogin ? " fixed left-45 top-5" : "" }`}
+      className="relative w-14 h-8 rounded-full bg-gray-300 dark:bg-gray-700 p-1 shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2"
     >
       <motion.div
         layout
@@ -41,19 +41,6 @@ export default function DarkModeToggle(params) {
       >
         <AnimatePresence mode="wait">
           {isDark ? (
-            <motion.svg
-              key="moon"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              className="w-4 h-4 text-indigo-300"
-              fill="currentColor"
-            >
-              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-            </motion.svg>
-          ) : (
             <motion.svg
               key="sun"
               initial={{ opacity: 0, scale: 0.8 }}
@@ -73,6 +60,19 @@ export default function DarkModeToggle(params) {
               <line x1="20" y1="12" x2="23" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               <line x1="4.22" y1="19.78" x2="6.34" y2="17.66" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               <line x1="17.66" y1="6.34" x2="19.78" y2="4.22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </motion.svg>
+          ) : (
+            <motion.svg
+              key="moon"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              className="w-4 h-4 text-indigo-300"
+              fill="currentColor"
+            >
+              <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
             </motion.svg>
           )}
         </AnimatePresence>
