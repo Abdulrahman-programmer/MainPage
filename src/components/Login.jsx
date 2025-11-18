@@ -7,9 +7,31 @@ function Login(params) {
   const navigate = useNavigate();
   const [visibility, setVisibility] = useState("password");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/afterlogin"); // redirect after login
+    const email = e.target.email.value;
+    const password = e.target.password.value;
+
+    try {
+      const { default: axios } = await import("axios");
+      const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email, password });
+
+      // save token if provided
+      if (res.data?.token) {
+        localStorage.setItem("authToken", res.data.token);
+      }
+
+  // optional: close modal then navigate
+  params.close?.();
+  // Build name/email to pass to afterlogin. Prefer server response, fall back to submitted email.
+  const name = res.data?.user?.name || res.data?.name || "";
+  const userEmail = res.data?.user?.email || res.data?.email || email;
+  navigate("/afterlogin", { state: { name, email: userEmail } });
+    } catch (err) {
+      console.error("Login error:", err);
+      const msg = err.response?.data?.message || err.message || "Login failed";
+      alert(msg);
+    }
   };
 
   return (

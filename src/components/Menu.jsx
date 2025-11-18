@@ -11,6 +11,7 @@ import menuIcon from '../assets/menu.svg';
 import closeIcon from '../assets/close.svg';
 import "./components.css";
 import DarkModeToggle from "./Btn-toggle";
+import { param } from "framer-motion/client";
 
 
 const menuItems = [
@@ -23,13 +24,15 @@ const menuItems = [
   { name: "Logout", link: "/", icon: logoutIcon }, // redirect to before login
 ];
 
-const Menu = () => {
+const Menu = (param) => {
     
     const [open, setOpen] = useState(false);
     const icon = open ? closeIcon : menuIcon;
-    const name = "Shruti kumari";
-    const email = "shruti51352@gmail.com";
-    const profileIcon = "https://imgs.search.brave.com/0w706iazLuiZA7_266Xh7P1rBBHA32banx87yLoT5ZI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzLzY2L2Zm/L2NiLzY2ZmZjYjU2/NDgyYzY0YmRmNmI2/MDEwNjg3OTM4ODM1/LmpwZw";
+    const name = param.name || "User";
+    const email = param.email || "example@email.com";
+    
+    
+    const profileIcon = "https://imgs.search.brave.com/hQGpORTxbSweZrFglnSiOKQOz1YBschmBRDlbCpiUu0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjgv/MjAzLzEzNS9zbWFs/bC9hYnN0cmFjdC1o/dW1hbi1zaWxob3Vl/dHRlLXdpdGgtYmx1/ZS1ncmFkaWVudC1p/c29sYXRlZC1vbi10/cmFuc3BhcmVudC1i/YWNrZ3JvdW5kLXBu/Zy5wbmc";
     const profile = "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
     return (
         <div className="bg-blue-950 ">
@@ -62,7 +65,7 @@ const Menu = () => {
             > { /* Profile Section */}
                     <DarkModeToggle islogin ={true}/>
                 <div className=" w-full ">
-                    <img src={profile} alt={profileIcon} className="rounded-full h-30 w-30 m-auto mt-10 mb-2 ring-1 ring-gray-400 shadow-2xl" />
+                    <img src={profileIcon} alt={profileIcon} className="rounded-full h-30 w-30 m-auto mt-10 mb-2 ring-1 ring-gray-400 shadow-2xl" />
                     <p className="text-xl text-center text-white">{name}</p>
                     <p className="text-xs text-center text-gray-300">{email}</p>
                 </div>

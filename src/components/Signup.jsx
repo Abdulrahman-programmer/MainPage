@@ -1,10 +1,37 @@
-import { use, useState } from "react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import closeIcon from "../assets/close.svg"
 import "./components.css"
 
 function SignUp(params) {
 
     const [visibility, setVisiblity] = useState("password")
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const axios = (await import("axios")).default;
+            const form = new FormData(e.target);
+            const payload = Object.fromEntries(form.entries());
+
+            // adjust URL to your signup endpoint
+            const response = await axios.post("https://inventoryonline.onrender.com/api/auth/register", payload);
+
+            if (response.status >= 200 && response.status < 300) {
+                // close modal if provided
+                params.close?.();
+                // navigate to afterlogin page and pass name/email in state
+                navigate("/afterlogin", { state: { name: payload?.Name || "", email: payload?.email || "" } });
+            } else {
+                console.error("Signup failed:", response);
+                alert("Signup failed. Please try again.");
+            }
+        } catch (err) {
+            console.error("Signup error:", err);
+            alert(err?.response?.data?.message || "An error occurred during signup.");
+        }
+    };
 
     return (
         <div className="box top-15">
@@ -13,7 +40,7 @@ function SignUp(params) {
                 alt="close" onClick={() => { params.close() }} />
             </div>
             <h1 className="text-5xl pt-10 label text-center">Sign up</h1>
-            <form action="" method="post" className="flex flex-col p-10 pb-0 pt-5">
+            <form onSubmit={handleSubmit} className="flex flex-col p-10 pb-0 pt-5">
 
                 <label htmlFor="gst" className="label">GST no.</label>
                 <input type="text" name="gst" id="gstNo" required className="ip" />
