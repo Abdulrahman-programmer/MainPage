@@ -2,6 +2,7 @@ import "./components.css";
 import { useState } from "react";
 import closeIcon from "../assets/close.svg";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function Login(params) {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ function Login(params) {
     const password = e.target.password.value;
 
     try {
-      const { default: axios } = await import("axios");
+  
       const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email, password });
 
       // save token if provided

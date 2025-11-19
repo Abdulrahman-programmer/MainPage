@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import closeIcon from "../assets/close.svg"
-import "./components.css"
+import closeIcon from "../assets/close.svg";
+import "./components.css";
+import axios from "axios";
+
 
 function SignUp(params) {
 
@@ -11,7 +13,7 @@ function SignUp(params) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const axios = (await import("axios")).default;
+            
             const form = new FormData(e.target);
             const payload = Object.fromEntries(form.entries());
 
