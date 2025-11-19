@@ -7,7 +7,8 @@ import Inventory from './Pages/Inventory';
 import Sales from './Pages/Sales';
 import Report from './Pages/Report';
 import LowStock from './Pages/LowStock';
-import Setting from './Pages/Setting';
+import Setting from './Pages/Setting'
+
 
 function App() {
   return (

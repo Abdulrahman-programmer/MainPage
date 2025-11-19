@@ -28,8 +28,7 @@ const Menu = (param) => {
     
     const [open, setOpen] = useState(false);
     const icon = open ? closeIcon : menuIcon;
-    const name = param.name || "User";
-    const email = param.email || "example@email.com";
+    
     
     
     const profileIcon = "https://imgs.search.brave.com/hQGpORTxbSweZrFglnSiOKQOz1YBschmBRDlbCpiUu0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjgv/MjAzLzEzNS9zbWFs/bC9hYnN0cmFjdC1o/dW1hbi1zaWxob3Vl/dHRlLXdpdGgtYmx1/ZS1ncmFkaWVudC1p/c29sYXRlZC1vbi10/cmFuc3BhcmVudC1i/YWNrZ3JvdW5kLXBu/Zy5wbmc";
@@ -62,16 +61,12 @@ const Menu = (param) => {
                     lg:translate-x-0  lg:shadow-none dark:bg-gray-800
                     
                 `}
-            > { /* Profile Section */}
+            > 
                     <DarkModeToggle islogin ={true}/>
-                <div className=" w-full ">
-                    <img src={profileIcon} alt={profileIcon} className="rounded-full h-30 w-30 m-auto mt-10 mb-2 ring-1 ring-gray-400 shadow-2xl" />
-                    <p className="text-xl text-center text-white">{name}</p>
-                    <p className="text-xs text-center text-gray-300">{email}</p>
-                </div>
+                
                 
                     {/* Menu Items */}
-                <ul className="mt-5 lg:mt-8 space-y-2 px-6 flex flex-col">
+                <ul className=" py-50 lg:mt-8 space-y-2 px-6 flex flex-col ">
                     {menuItems.map((item) => (
                         <Link to={item.link}
                          key={item.name}>      
