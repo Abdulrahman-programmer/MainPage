@@ -3,12 +3,13 @@ import { useState } from "react";
 import closeIcon from "../assets/close.svg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import Loading from "./Loading";
 function Login(params) {
   const navigate = useNavigate();
   const [visibility, setVisibility] = useState("password");
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
@@ -27,6 +28,7 @@ function Login(params) {
   // Build name/email to pass to afterlogin. Prefer server response, fall back to submitted email.
   const name = res.data?.user?.name || res.data?.name || "";
   const userEmail = res.data?.user?.email || res.data?.email || email;
+  setLoading(false);
   navigate("/afterlogin", { state: { name, email: userEmail } });
     } catch (err) {
       console.error("Login error:", err);
@@ -37,6 +39,7 @@ function Login(params) {
 
   return (
     <div className="box">
+      {loading && <Loading text="Logging in..." />}
       {/* Close button */}
       <div className="flex justify-end">
         <img

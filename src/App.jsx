@@ -12,7 +12,9 @@ import Setting from './Pages/Setting'
 
 function App() {
   return (
+   
     <BrowserRouter>
+    
       <Routes>
         <Route path="/" element={<Before_logIn />} />
 

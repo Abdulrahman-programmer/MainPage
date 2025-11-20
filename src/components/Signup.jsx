@@ -3,19 +3,22 @@ import { useNavigate } from "react-router-dom";
 import closeIcon from "../assets/close.svg";
 import "./components.css";
 import axios from "axios";
+import Loading from "./Loading";
 
 
 function SignUp(params) {
-
+    const [loading, setLoading] = useState(false);
     const [visibility, setVisiblity] = useState("password")
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+        setLoading(true)
         e.preventDefault();
         try {
             
             const form = new FormData(e.target);
             const payload = Object.fromEntries(form.entries());
+            console.log(payload);
 
             // adjust URL to your signup endpoint
             const response = await axios.post("https://inventoryonline.onrender.com/api/auth/register", payload);
@@ -24,6 +27,7 @@ function SignUp(params) {
                 // close modal if provided
                 params.close?.();
                 // navigate to afterlogin page and pass name/email in state
+                setLoading(false);
                 navigate("/afterlogin", { state: { name: payload?.Name || "", email: payload?.email || "" } });
             } else {
                 console.error("Signup failed:", response);
@@ -37,6 +41,7 @@ function SignUp(params) {
 
     return (
         <div className="box top-15">
+            {loading && <Loading text="Signing up..." />}
             <div className=" flex justify-end" >
                 <img src={closeIcon} className="opacity-70 cursor-pointer"
                 alt="close" onClick={() => { params.close() }} />

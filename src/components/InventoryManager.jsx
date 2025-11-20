@@ -14,6 +14,29 @@ function InventoryManager() {
     const [category, setCategory] = useState('');
     const [qty, setQty] = useState('');
     const [costPrice, setCostPrice] = useState('');
+    // read auth token from localStorage and apply to axios for all requests
+    const [authToken, setAuthToken] = useState(() => {
+        return localStorage.getItem('token') || localStorage.getItem('authToken') || '';
+    });
+
+    useEffect(() => {
+        if (authToken) {
+            axios.defaults.headers.common['Authorization'] = `Bearer ${authToken}`;
+        } else {
+            delete axios.defaults.headers.common['Authorization'];
+        }
+    }, [authToken]);
+
+    // keep authToken in sync if another tab updates localStorage
+    useEffect(() => {
+        const onStorage = (e) => {
+            if (e.key === 'token' || e.key === 'authToken') {
+                setAuthToken(e.newValue || '');
+            }
+        };
+        window.addEventListener('storage', onStorage);
+        return () => window.removeEventListener('storage', onStorage);
+    }, []);
     const [sellingPrice, setSellingPrice] = useState('');
     const [purchaseDate, setPurchaseDate] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
@@ -29,7 +52,7 @@ function InventoryManager() {
             setLoading(true);
             setError(null);
             try {
-                const res = await axios.get('/api/inventory');
+                const res = await axios.get('https://inventoryonline.onrender.com/api/products');
                 // expect server to return an array of items
                 if (Array.isArray(res.data)) {
                     setItems(res.data);
@@ -63,21 +86,21 @@ function InventoryManager() {
             id: editingId ?? Date.now(),
             name: name.trim(),
             category: category.trim(),
-            qty: Number(qty) || 0,
             costPrice: Number(costPrice) || 0,
             sellingPrice: Number(sellingPrice) || 0,
-            purchaseDate: purchaseDate || null,
             expiryDate: expiryDate || null,
+            purchaseDate: purchaseDate || null,
+            qty: Number(qty) || 0,
         };
         const save = async () => {
             setError(null);
             try {
                 if (editingId) {
                     // update on server
-                    await axios.put(`/api/inventory/${item.id}`, item);
+                    await axios.put(`'https://inventoryonline.onrender.com/api/products/${item.id}`, item);
                     setItems((prev) => prev.map((it) => (it.id === editingId ? item : it)));
                 } else {
-                    const res = await axios.post('/api/inventory', item);
+                    const res = await axios.post('https://inventoryonline.onrender.com/api/products', item);
                     // if server returns created item (with id), use it; otherwise keep local id
                     const created = (res && res.data) ? res.data : item;
                     setItems((prev) => [created, ...prev]);
@@ -114,7 +137,7 @@ function InventoryManager() {
         const remove = async () => {
             setError(null);
             try {
-                await axios.delete(`/api/inventory/${id}`);
+                await axios.delete(`'https://inventoryonline.onrender.com/api/products/${id}`);
                 setItems((prev) => prev.filter((it) => it.id !== id));
             } catch (err) {
                 // fallback to local delete
@@ -150,7 +173,7 @@ function InventoryManager() {
                     <label className="block text-sm font-medium mb-1">Selling Price</label>
                     <input value={sellingPrice} onChange={(e) => setSellingPrice(e.target.value)} type="number" step="0.01" min="0" className="w-full px-3 py-2 border rounded-md dark:bg-gray-700" placeholder="0.00" />
                 </div>
-               
+
 
                 <div className="md:col-span-3">
                     <label className="block text-sm font-medium mb-1">Purchase Date</label>
@@ -160,7 +183,7 @@ function InventoryManager() {
                     <label className="block text-sm font-medium mb-1">Expiry Date</label>
                     <input value={expiryDate} onChange={(e) => setExpiryDate(e.target.value)} type="date" className="w-full px-3 py-2 border rounded-md dark:bg-gray-700" />
                 </div>
-                 <div className="flex gap-2">
+                <div className="flex gap-2">
                     <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500">
                         {editingId ? 'Update' : 'Add'}
                     </button>
