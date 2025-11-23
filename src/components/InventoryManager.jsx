@@ -1,9 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+
+// set base URL for all axios requests
+axios.defaults.baseURL = 'https://inventoryonline.onrender.com';
+
+const normalizeItem = (it) => {
+    const id = it.id ?? it.productId ?? it._id ?? it.product_id ?? null;
+    const barcode = it.barcode ?? it.bracode ?? it.barCode ?? '';
+    const qty = Number(it.qty ?? it.quantity ?? 0);
+    const costPrice = Number(it.costPrice ?? it.cost ?? 0);
+    const sellingPrice = Number(it.sellingPrice ?? it.selling ?? 0);
+    return {
+        ...it,
+        id,
+            barcode,
+            name: (it.name ?? '').toString().toUpperCase(),
+            category: (it.category ?? '').toString().toUpperCase(),
+        qty,
+        costPrice,
+        sellingPrice,
+    };
+};
+
 function InventoryManager() {
     const [items, setItems] = useState(() => {
         try {
-            return JSON.parse(localStorage.getItem('inventory') || '[]');
+            const raw = JSON.parse(localStorage.getItem('inventory') || '[]');
+            return Array.isArray(raw) ? raw.map(normalizeItem) : [];
         } catch {
             return [];
         }
@@ -38,9 +61,11 @@ function InventoryManager() {
         return () => window.removeEventListener('storage', onStorage);
     }, []);
     const [sellingPrice, setSellingPrice] = useState('');
+    const [barcode, setBarcode] = useState('');
     const [purchaseDate, setPurchaseDate] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [editingId, setEditingId] = useState(null);
+
 
     useEffect(() => {
         localStorage.setItem('inventory', JSON.stringify(items));
@@ -52,11 +77,11 @@ function InventoryManager() {
             setLoading(true);
             setError(null);
             try {
-                const res = await axios.get('https://inventoryonline.onrender.com/api/products');
-                // expect server to return an array of items
-                if (Array.isArray(res.data)) {
-                    setItems(res.data);
-                    setItems(res.data);
+                const res = await axios.get('/api/products');
+                // server uses envelope { message, data }
+                const payload = res.data && (res.data.data ?? res.data);
+                if (Array.isArray(payload)) {
+                    setItems(payload.map(normalizeItem));
                 }
             } catch (err) {
                 // network or server error -- we'll keep localStorage items
@@ -74,6 +99,7 @@ function InventoryManager() {
         setQty('');
         setCostPrice('');
         setSellingPrice('');
+        setBarcode('');
         setPurchaseDate('');
         setExpiryDate('');
         setEditingId(null);
@@ -82,36 +108,71 @@ function InventoryManager() {
     const handleSubmit = (e) => {
         e.preventDefault();
         if (!name.trim()) return;
-        const item = {
-            id: editingId ?? Date.now(),
-            name: name.trim(),
-            category: category.trim(),
+        const payload = {
+            barcode: barcode || (Date.now()).toString(),
+            name: name.trim().toUpperCase(),
+            category: category.trim().toUpperCase(),
             costPrice: Number(costPrice) || 0,
             sellingPrice: Number(sellingPrice) || 0,
             expiryDate: expiryDate || null,
             purchaseDate: purchaseDate || null,
-            qty: Number(qty) || 0,
+            quantity: Number(qty) || 0,
+            status: 'ACTIVE',
         };
         const save = async () => {
             setError(null);
             try {
                 if (editingId) {
-                    // update on server
-                    await axios.put(`'https://inventoryonline.onrender.com/api/products/${item.id}`, item);
-                    setItems((prev) => prev.map((it) => (it.id === editingId ? item : it)));
+                    // update using specific endpoints supported by the API
+                    const original = items.find((it) => String(it.id) === String(editingId)) || {};
+                    const promises = [];
+                    // quantity endpoint
+                    if (Number(payload.quantity) !== Number(original.qty)) {
+                        promises.push(axios.put(`/api/products/${editingId}/quantity?quantity=${payload.quantity}`));
+                    }
+                    // price endpoint
+                    if (Number(payload.costPrice) !== Number(original.costPrice) || Number(payload.sellingPrice) !== Number(original.sellingPrice)) {
+                        promises.push(axios.put(`/api/products/${editingId}/price`, { costPrice: payload.costPrice, sellingPrice: payload.sellingPrice }));
+                    }
+                    // status endpoint (if provided and different)
+                    if (payload.status && payload.status !== original.status) {
+                        promises.push(axios.put(`/api/products/${editingId}/status?status=${payload.status}`));
+                    }
+                    // try full update as a best-effort if other non-price/non-quantity fields changed
+                    const otherChanged = ['name', 'category', 'barcode', 'expiryDate', 'purchaseDate'].some((k) => (payload[k] ?? '') !== (original[k] ?? original[k.toLowerCase()] ?? ''));
+                    if (otherChanged) {
+                        // some backends support this; if it fails we'll ignore and keep local state
+                        promises.push(axios.put(`/api/products/${editingId}`, payload).catch(() => null));
+                    }
+
+                    const results = await Promise.all(promises);
+                    // try to find a server-returned product from responses
+                    let updatedRaw = null;
+                    for (const r of results) {
+                        if (r && r.data) {
+                            const p = r.data.data ?? r.data;
+                            if (p && (p.id || p.productId || p._id || p.barcode)) {
+                                updatedRaw = p;
+                                break;
+                            }
+                        }
+                    }
+                    const updated = updatedRaw ? normalizeItem(updatedRaw) : normalizeItem({ ...original, ...payload, id: editingId });
+                    setItems((prev) => prev.map((it) => (String(it.id) === String(editingId) ? updated : it)));
                 } else {
-                    const res = await axios.post('https://inventoryonline.onrender.com/api/products', item);
-                    // if server returns created item (with id), use it; otherwise keep local id
-                    const created = (res && res.data) ? res.data : item;
+                    const res = await axios.post('/api/products', payload);
+                    // support envelope
+                    const createdRaw = res.data && (res.data.data ?? res.data);
+                    const created = createdRaw ? normalizeItem(createdRaw) : normalizeItem(payload);
                     setItems((prev) => [created, ...prev]);
                 }
             } catch (err) {
                 // fallback: persist locally if backend unavailable
                 setError('Could not save to server — saved locally.');
                 if (editingId) {
-                    setItems((prev) => prev.map((it) => (it.id === editingId ? item : it)));
+                    setItems((prev) => prev.map((it) => (String(it.id) === String(editingId) ? normalizeItem({ ...it, ...payload, id: editingId }) : it)));
                 } else {
-                    setItems((prev) => [item, ...prev]);
+                    setItems((prev) => [normalizeItem(payload), ...prev]);
                 }
             } finally {
                 resetForm();
@@ -126,9 +187,10 @@ function InventoryManager() {
         setQty(String(it.qty));
         setCostPrice(String(it.costPrice ?? ''));
         setSellingPrice(String(it.sellingPrice ?? ''));
+        setBarcode(it.barcode ?? it.bracode ?? '');
         setPurchaseDate(it.purchaseDate ?? '');
         setExpiryDate(it.expiryDate ?? '');
-        setEditingId(it.id);
+        setEditingId(it.id ?? it.productId ?? it._id ?? it.product_id ?? it.barcode ?? it.bracode ?? null);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -136,13 +198,13 @@ function InventoryManager() {
         if (!window.confirm('Delete this item?')) return;
         const remove = async () => {
             setError(null);
-            try {
-                await axios.delete(`'https://inventoryonline.onrender.com/api/products/${id}`);
-                setItems((prev) => prev.filter((it) => it.id !== id));
+                try {
+                await axios.delete(`/api/products/${id}`);
+                setItems((prev) => prev.filter((it) => String(it.id) !== String(id)));
             } catch (err) {
                 // fallback to local delete
                 setError('Could not delete on server — removed locally.');
-                setItems((prev) => prev.filter((it) => it.id !== id));
+                setItems((prev) => prev.filter((it) => String(it.id) !== String(id)));
             } finally {
                 if (editingId === id) resetForm();
             }
