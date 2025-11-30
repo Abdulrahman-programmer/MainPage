@@ -23,14 +23,8 @@ const normalizeItem = (it) => {
 };
 
 function InventoryManager() {
-    const [items, setItems] = useState(() => {
-        try {
-            const raw = JSON.parse(localStorage.getItem('inventory') || '[]');
-            return Array.isArray(raw) ? raw.map(normalizeItem) : [];
-        } catch {
-            return [];
-        }
-    });
+    // items are loaded from the backend on component mount; do not persist to localStorage
+    const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [name, setName] = useState('');
@@ -67,25 +61,26 @@ function InventoryManager() {
     const [editingId, setEditingId] = useState(null);
 
 
-    useEffect(() => {
-        localStorage.setItem('inventory', JSON.stringify(items));
-    }, [items]);
+  
 
-    // Fetch from backend on mount, fallback to localStorage if request fails
+    // Fetch from backend on mount
     useEffect(() => {
         const fetchItems = async () => {
             setLoading(true);
             setError(null);
             try {
                 const res = await axios.get('/api/products');
+                
+                
                 // server uses envelope { message, data }
                 const payload = res.data && (res.data.data ?? res.data);
                 if (Array.isArray(payload)) {
                     setItems(payload.map(normalizeItem));
                 }
             } catch (err) {
-                // network or server error -- we'll keep localStorage items
-                setError('Could not fetch from server, using local data.');
+                // network or server error
+                setError('Could not fetch items from server.');
+                setItems([]);
             } finally {
                 setLoading(false);
             }
@@ -167,8 +162,8 @@ function InventoryManager() {
                     setItems((prev) => [created, ...prev]);
                 }
             } catch (err) {
-                // fallback: persist locally if backend unavailable
-                setError('Could not save to server — saved locally.');
+                // fallback: update in-memory list if backend unavailable
+                setError('Could not save to server — item added to the current list.');
                 if (editingId) {
                     setItems((prev) => prev.map((it) => (String(it.id) === String(editingId) ? normalizeItem({ ...it, ...payload, id: editingId }) : it)));
                 } else {
@@ -202,8 +197,8 @@ function InventoryManager() {
                 await axios.delete(`/api/products/${id}`);
                 setItems((prev) => prev.filter((it) => String(it.id) !== String(id)));
             } catch (err) {
-                // fallback to local delete
-                setError('Could not delete on server — removed locally.');
+                // fallback to in-memory delete
+                setError('Could not delete on server — removed from current list.');
                 setItems((prev) => prev.filter((it) => String(it.id) !== String(id)));
             } finally {
                 if (editingId === id) resetForm();
