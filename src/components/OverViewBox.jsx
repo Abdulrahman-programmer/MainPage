@@ -12,12 +12,11 @@ function OverViewBox() {
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalOutOfStock, setTotalOutOfStock] = useState(0);
-    useEffect(() => {
-        const fetchOverviewData = async () => {
-            try {
-                const token = localStorage.getItem('authToken');
-                const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
-                const productsRes = await axios.get("/api/products", config);
+    const fetchOverviewData = async () => {
+        try {
+            const token = localStorage.getItem('authToken');
+            const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
+            const productsRes = await axios.get("/api/products", config);
                 const ordersRes = await axios.get("/api/sales", config);
                 const outOfStockRes = await axios.get(`/api/products/low-stock/1`, config);
                 
@@ -31,9 +30,11 @@ function OverViewBox() {
                 console.error("Failed to fetch overview data:", error);
             }
         };
-
+    useEffect(() => {
         fetchOverviewData();
     }, []);
+
+    
     
     return (
         <div className="p-4 m-4 bg-white rounded-lg shadow-md lg:ml-72 dark:bg-gray-800 dark:text-white">
@@ -75,7 +76,7 @@ function OverViewBox() {
                         <p className="text-xs lg:text-base">Out Of Stock</p>
                     </div>
                 </div>
-                <MakeSale />
+                <MakeSale fetchOverviewData={fetchOverviewData} />
             </div>
             
         </div>

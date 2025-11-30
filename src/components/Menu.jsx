@@ -11,7 +11,7 @@ import menuIcon from '../assets/menu.svg';
 import closeIcon from '../assets/close.svg';
 import "./components.css";
 import DarkModeToggle from "./Btn-toggle";
-import { param } from "framer-motion/client";
+
 
 
 const menuItems = [
@@ -32,7 +32,7 @@ const Menu = (param) => {
     
     
     const profileIcon = "https://imgs.search.brave.com/hQGpORTxbSweZrFglnSiOKQOz1YBschmBRDlbCpiUu0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjgv/MjAzLzEzNS9zbWFs/bC9hYnN0cmFjdC1o/dW1hbi1zaWxob3Vl/dHRlLXdpdGgtYmx1/ZS1ncmFkaWVudC1p/c29sYXRlZC1vbi10/cmFuc3BhcmVudC1i/YWNrZ3JvdW5kLXBu/Zy5wbmc";
-    const profile = "https://images.unsplash.com/photo-1502685104226-ee32379fefbe?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80";
+    const profile = "https://imgs.search.brave.com/6IiIGZaOSARbb0xKycMP0GIfeVl-K2BJxAoiDxUalc8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMTgv/NzQyLzAxNS9zbWFs/bC9taW5pbWFsLXBy/b2ZpbGUtYWNjb3Vu/dC1zeW1ib2wtdXNl/ci1pbnRlcmZhY2Ut/dGhlbWUtM2QtaWNv/bi1yZW5kZXJpbmct/aWxsdXN0cmF0aW9u/LWlzb2xhdGVkLWlu/LXRyYW5zcGFyZW50/LWJhY2tncm91bmQt/cG5nLnBuZw";
     return (
         <div className="bg-blue-950 ">
             {/* Menu Button - hidden on large screens */}
@@ -55,7 +55,7 @@ const Menu = (param) => {
             {/* Sliding Menu */}
             <nav
                 className={`
-                    fixed top-0 left-0 h-screen w-64 bg-blue-950 shadow-lg z-50
+                    fixed top-0 left-0 h-screen w-64 bg-blue-950 shadow-lg z-50 py-20
                     transform transition-transform duration-300
                     ${open ? "translate-x-0" : "-translate-x-full"}
                     lg:translate-x-0  lg:shadow-none dark:bg-gray-800
@@ -63,10 +63,19 @@ const Menu = (param) => {
                 `}
             > 
                     <DarkModeToggle islogin ={true}/>
-                
+                {/* Profile Section */}
+                <div className="flex flex-col items-center  border-b border-gray-300 dark:border-gray-600">
+                    <img
+                        src={profile}
+                        alt="Profile"
+                        className="w-20 h-20 rounded-full mb-2 object-cover"
+                    />
+                    <h2 className="text-white text-lg font-semibold">{localStorage.getItem("userName")}</h2>
+                    <p className="text-gray-300 text-xs mb-4">{localStorage.getItem("userEmail")}</p>
+                </div>
                 
                     {/* Menu Items */}
-                <ul className=" py-50 lg:mt-8 space-y-2 px-6 flex flex-col ">
+                <ul className=" lg:mt-8 space-y-2 px-6 py-5 flex flex-col ">
                     {menuItems.map((item) => (
                         <Link to={item.link}
                          key={item.name}>      

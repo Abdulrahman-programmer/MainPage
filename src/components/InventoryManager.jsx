@@ -208,7 +208,7 @@ function InventoryManager() {
     };
 
     return (
-        <div className="max-w-5xl mx-auto mt-6 p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800 lg:ml-72">
+        <div className="max-w-[80%] mx-auto mt-6 p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800 lg:ml-72">
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
                 <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Name</label>

@@ -5,7 +5,7 @@ import MaxSales from "../components/MaxSales";
 import { useOutletContext } from "react-router-dom";
 
 function Dashboard(param) {
-    const { name, email } = useOutletContext();
+    const name = localStorage.getItem("userName") || "Admin";
     return (
     <>
         <Greeting name={name} />
