@@ -54,7 +54,7 @@ function Sales() {
     return (
         <div className="p-4 lg:ml-72">
             <h1 className="text-3xl font-bold  text-center rounded-2xl bg-white mt-4 p-2 
-         transition-all duration-300 dark:bg-gray-700 dark:hover:bg-gray-500 lg:ml-72">Sales</h1>
+         transition-all duration-300 dark:bg-gray-700 dark:hover:bg-gray-500 ">Sales</h1>
             <MakeSale refreshSales={refreshSales} />
 
             {loading && <Loading text="Loading sales..." />}
