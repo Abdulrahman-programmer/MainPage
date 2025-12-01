@@ -8,6 +8,7 @@ function Login(params) {
   const navigate = useNavigate();
   const [visibility, setVisibility] = useState("password");
   const [loading, setLoading] = useState(false);
+
   const handleSubmit = async (e) => {
     setLoading(true)
     e.preventDefault();
@@ -27,10 +28,13 @@ function Login(params) {
   // optional: close modal then navigate
   params.close?.();
   // Build name/email to pass to afterlogin. Prefer server response, fall back to submitted email.
-  const name = res.data?.user?.name || res.data?.name || "";
-  const userEmail = res.data?.user?.email || res.data?.email || email;
+  const name = res.data?.user?.username ;
+  const userEmail = res.data?.user?.email;
+  sessionStorage.setItem("userName", name || "");
+  sessionStorage.setItem("userEmail", userEmail || email);
+  
   setLoading(false);
-  navigate("/afterlogin", { state: { name, email: userEmail } });
+  navigate("/afterlogin");
     } catch (err) {
       console.error("Login error:", err);
       const msg = err.response?.data?.message || err.message || "Login failed";

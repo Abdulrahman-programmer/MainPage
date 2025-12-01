@@ -4,14 +4,16 @@ import orderIcon from "../assets/orders.svg";
 import outofstockIcon from "../assets/stockWarning.svg";
 import MakeSale from "./MakeSale";
 import stockIcon from "../assets/Stock.svg";
+import OutofStock from "../components/OutofStock.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 axios.defaults.baseURL = 'https://inventoryonline.onrender.com';
-function OverViewBox() {
+function OverViewBox(params) {
     const [totalProducts, setTotalProducts] = useState(0);
     const [totalAmount, setTotalAmount] = useState(0);
     const [totalOrders, setTotalOrders] = useState(0);
     const [totalOutOfStock, setTotalOutOfStock] = useState(0);
+    const [displayOutofStock, setDisplayOutofStock] = useState(false);
     const fetchOverviewData = async () => {
         try {
             const token = localStorage.getItem('authToken');
@@ -39,7 +41,7 @@ function OverViewBox() {
     return (
         <div className="p-4 m-4 bg-white rounded-lg shadow-md lg:ml-72 dark:bg-gray-800 dark:text-white">
             <h2 className="text-2xl font-bold mb-4 ml-2 lg:ml-4">Overview</h2>
-            <div className="container">
+            <div className="container flex flex-wrap justify-center lg:justify-start gap-4 ">
                 <div className="detailBox ">
                     <div className="iconBox ">
                         <img src={productIcon} alt="" className="w-full"/>
@@ -72,13 +74,15 @@ function OverViewBox() {
                         <img src={outofstockIcon} alt="" className="w-full"/>
                     </div>
                     <div className="values text-red-500/50">
-                        <p className="text-xl font-bold lg:text-2xl">{totalOutOfStock}</p>
+                        <p className="text-xl font-bold lg:text-2xl" onClick={() => setDisplayOutofStock(!displayOutofStock)}>{totalOutOfStock}</p>
                         <p className="text-xs lg:text-base">Out Of Stock</p>
                     </div>
                 </div>
                 <MakeSale fetchOverviewData={fetchOverviewData} />
             </div>
-            
+            {displayOutofStock && (
+                <OutofStock close={() => setDisplayOutofStock(false)} />
+            )}
         </div>
     );
 }

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import BarcodeScanner from './BarcodeScanner';
 
 // set base URL for all axios requests
 axios.defaults.baseURL = 'https://inventoryonline.onrender.com';
@@ -59,6 +60,7 @@ function InventoryManager() {
     const [purchaseDate, setPurchaseDate] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [editingId, setEditingId] = useState(null);
+    const [scannerOpen, setScannerOpen] = useState(false);
 
 
   
@@ -207,9 +209,88 @@ function InventoryManager() {
         remove();
     };
 
+    const handleBarcodeScanned = async (scannedBarcode) => {
+        console.log('Scanned barcode:', scannedBarcode);
+        setBarcode(scannedBarcode);
+        
+        // Try to find existing product with this barcode
+        try {
+            const response = await axios.get(`/api/products?barcode=${scannedBarcode}`);
+            const products = response.data?.data || response.data || [];
+            
+            if (products.length > 0) {
+                const product = Array.isArray(products) ? products[0] : products;
+                const normalizedProduct = normalizeItem(product);
+                
+                // Ask user what to do with existing product
+                const action = window.confirm(
+                    `Product found!\n\nName: ${normalizedProduct.name}\nCategory: ${normalizedProduct.category}\nCurrent Quantity: ${normalizedProduct.qty}\nPrice: ₹${normalizedProduct.sellingPrice}\n\nClick OK to edit this product, or Cancel to create a new product with this barcode.`
+                );
+                
+                if (action) {
+                    // Edit existing product
+                    handleEdit(normalizedProduct);
+                } else {
+                    // Just set the barcode for new product
+                    resetForm();
+                    setBarcode(scannedBarcode);
+                }
+            } else {
+                // No product found, create new
+                resetForm();
+                setBarcode(scannedBarcode);
+                // Auto-set today's date for new products
+                const today = new Date().toISOString().split('T')[0];
+                setPurchaseDate(today);
+                // Auto-set expiry date to 1 year from now
+                const nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                setExpiryDate(nextYear.toISOString().split('T')[0]);
+            }
+        } catch (error) {
+            console.warn('Error checking existing product:', error);
+            // If API call fails, just set the barcode
+            setBarcode(scannedBarcode);
+            // Auto-set today's date for new products
+            const today = new Date().toISOString().split('T')[0];
+            setPurchaseDate(today);
+            // Auto-set expiry date to 1 year from now
+            const nextYear = new Date();
+            nextYear.setFullYear(nextYear.getFullYear() + 1);
+            setExpiryDate(nextYear.toISOString().split('T')[0]);
+        }
+        
+        setScannerOpen(false);
+    };
+
     return (
         <div className="max-w-[80%] mx-auto mt-6 p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800 lg:ml-72">
+            {error && (
+                <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
+                    {error}
+                </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1">Barcode</label>
+                    <div className="flex gap-2">
+                        <input 
+                            value={barcode} 
+                            onChange={(e) => setBarcode(e.target.value)} 
+                            className="flex-1 px-3 py-2 border rounded-md dark:bg-gray-700" 
+                            placeholder="Enter or scan barcode" 
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setScannerOpen(true)}
+                            className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-500 text-sm"
+                            title="Scan Barcode"
+                        >
+                            📷
+                        </button>
+                    </div>
+                </div>
                 <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Name</label>
                     <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-md dark:bg-gray-700" placeholder="Item name" />
@@ -255,6 +336,7 @@ function InventoryManager() {
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-medium">#</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium">Barcode</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Name</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Category</th>
                             <th className="px-4 py-2 text-right text-sm font-medium">Quantity</th>
@@ -268,7 +350,7 @@ function InventoryManager() {
                     <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                         {items.length === 0 ? (
                             <tr>
-                                <td colSpan="9" className="px-4 py-6 text-center text-gray-500">
+                                <td colSpan="10" className="px-4 py-6 text-center text-gray-500">
                                     No items yet.
                                 </td>
                             </tr>
@@ -276,6 +358,7 @@ function InventoryManager() {
                             items.map((it, idx) => (
                                 <tr key={it.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-4 py-3 text-sm">{idx + 1}</td>
+                                    <td className="px-4 py-3 text-sm font-mono">{it.barcode || '-'}</td>
                                     <td className="px-4 py-3 text-sm">{it.name}</td>
                                     <td className="px-4 py-3 text-sm">{it.category || '-'}</td>
                                     <td className="px-4 py-3 text-sm text-right">{it.qty}</td>
@@ -313,11 +396,19 @@ function InventoryManager() {
                                 <td />
                                 <td />
                                 <td />
+                                <td />
                             </tr>
                         </tfoot>
                     )}
                 </table>
             </div>
+
+            <BarcodeScanner 
+                isOpen={scannerOpen}
+                onClose={() => setScannerOpen(false)}
+                onScanSuccess={handleBarcodeScanned}
+                title="Scan Product Barcode"
+            />
         </div>
     );
 }

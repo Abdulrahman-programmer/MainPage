@@ -1,7 +1,7 @@
 import { useState,useEffect } from "react";
-function Greeting({name}) {
+function Greeting(params) {
     const [displayedText, setDisplayedText] = useState('');
-    const fullText = `Welcome Back, ${name || 'Admin'}`;
+    const fullText = `Welcome Back, ${sessionStorage.getItem("userName") || 'Admin'}`;
 
     useEffect(() => {
         let i = 0;

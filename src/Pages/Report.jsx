@@ -62,60 +62,73 @@ export default function ReportPage() {
     const getSalesSummary = () => callAPI("/api/reports/sales-summary");
 
     // Table renderer (supports arrays & objects)
-    const renderTable = (data) => {
-        const rows = data.data;
-        console.log(data);
-        console.log(rows);
-        
+const renderTable = (data) => {
+    // Always convert single object → array
+    const rows = Array.isArray(data.data) ? data.data : [data.data];
 
-        if (rows.length === 0) {
-            return <p className="text-center p-4">No data available</p>;
-        }
+    if (!rows || rows.length === 0) {
+        return <p className="text-center p-4">No data available</p>;
+    }
 
-        const headers = Object.keys(rows[0]);
+    // Auto-generate header names
+    const headers = Object.keys(rows[0]);
 
-        return (
-            <div className="overflow-x-auto">
-                <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow">
-                    <thead>
-                        <tr>
-                            {headers.map((key) => (
-                                <th
-                                    key={key}
-                                    className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider"
-                                >
-                                    {key}
-                                </th>
-                            ))}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {rows.map((item, index) => (
-                            <tr
-                                key={item.id || index}
-                                className={
-                                    index % 2 === 0
-                                        ? "bg-gray-100 dark:bg-gray-700"
-                                        : "bg-white dark:bg-gray-800"
-                                }
+    return (
+        <div className="overflow-x-auto">
+            <table className="min-w-full bg-white dark:bg-gray-800 rounded-lg shadow">
+                <thead>
+                    <tr>
+                        {headers.map((key) => (
+                            <th
+                                key={key}
+                                className="px-6 py-3 border-b-2 border-gray-300 text-left leading-4 text-blue-500 tracking-wider"
                             >
-                                {headers.map((header, i) => (
+                                {key}
+                            </th>
+                        ))}
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {rows.map((item, index) => (
+                        <tr
+                            key={index}
+                            className={
+                                index % 2 === 0
+                                    ? "bg-gray-100 dark:bg-gray-700"
+                                    : "bg-white dark:bg-gray-800"
+                            }
+                        >
+                            {headers.map((header, i) => {
+                                const value = item[header];
+
+                                // Format numeric values with ₹ symbol and commas
+                                const formattedValue =
+                                    typeof value === "number"
+                                        ? `₹${new Intl.NumberFormat("en-IN").format(value)}`
+                                        : value !== null && value !== undefined
+                                        ? value.toString()
+                                        : "N/A";
+
+                                return (
                                     <td
                                         key={i}
                                         className="px-6 py-4 border-b border-gray-300"
                                     >
-                                        {item[header] !== null && item[header] !== undefined
-                                            ? item[header].toString()
-                                            : "N/A"}
+                                        {formattedValue}
                                     </td>
-                                ))}
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
+                                );
+                            })}
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+
+
 
 
     return (
