@@ -29,7 +29,8 @@ const Menu = (param) => {
     const [open, setOpen] = useState(false);
     const icon = open ? closeIcon : menuIcon;
     
-    
+    const email = param.email;
+    const name = param.name;
     
     const profileIcon = "https://imgs.search.brave.com/hQGpORTxbSweZrFglnSiOKQOz1YBschmBRDlbCpiUu0/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wNjgv/MjAzLzEzNS9zbWFs/bC9hYnN0cmFjdC1o/dW1hbi1zaWxob3Vl/dHRlLXdpdGgtYmx1/ZS1ncmFkaWVudC1p/c29sYXRlZC1vbi10/cmFuc3BhcmVudC1i/YWNrZ3JvdW5kLXBu/Zy5wbmc";
     const profile = "https://imgs.search.brave.com/6IiIGZaOSARbb0xKycMP0GIfeVl-K2BJxAoiDxUalc8/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9zdGF0/aWMudmVjdGVlenku/Y29tL3N5c3RlbS9y/ZXNvdXJjZXMvdGh1/bWJuYWlscy8wMTgv/NzQyLzAxNS9zbWFs/bC9taW5pbWFsLXBy/b2ZpbGUtYWNjb3Vu/dC1zeW1ib2wtdXNl/ci1pbnRlcmZhY2Ut/dGhlbWUtM2QtaWNv/bi1yZW5kZXJpbmct/aWxsdXN0cmF0aW9u/LWlzb2xhdGVkLWlu/LXRyYW5zcGFyZW50/LWJhY2tncm91bmQt/cG5nLnBuZw";
@@ -70,8 +71,8 @@ const Menu = (param) => {
                         alt="Profile"
                         className="w-20 h-20 rounded-full mb-2 object-cover"
                     />
-                    <h2 className="text-white text-lg font-semibold">{localStorage.getItem("userName")}</h2>
-                    <p className="text-gray-300 text-xs mb-4">{localStorage.getItem("userEmail")}</p>
+                    <h2 className="text-white text-lg font-semibold">{name}</h2>
+                    <p className="text-gray-300 text-xs mb-4">{email}</p>
                 </div>
                 
                     {/* Menu Items */}

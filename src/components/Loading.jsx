@@ -30,7 +30,7 @@ const Loading = ({ size = 40, text = "Loading...", inline = false }) => {
                 }
             `}</style>
 
-            <div role="status" aria-live="polite" className ="h-full w-full z-70  fixed bg-black/50 dark:bg-white/20" style={containerStyle}>
+            <div role="status" aria-live="polite" className ="h-full w-full z-41  fixed bg-black/50 dark:bg-white/20" style={containerStyle}>
                 <svg
                     className="loading-spinner"
                     width={size}

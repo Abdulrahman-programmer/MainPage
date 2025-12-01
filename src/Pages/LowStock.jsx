@@ -86,7 +86,7 @@ function Low_Stock() {
 
     return (
         <div className='w-full'>
-            <h1 className="text-3xl max-w-[80%] font-bold text-center rounded-2xl bg-white mt-4 p-2 transition-all duration-300 dark:bg-gray-700 dark:hover:bg-gray-500 lg:ml-72">Low Stock Page</h1>
+            <h1 className="text-3xl max-w-[80%] m-auto font-bold text-center rounded-2xl bg-white mt-4 p-2 transition-all duration-300 dark:bg-gray-700 dark:hover:bg-gray-500 lg:ml-72">Low Stock Page</h1>
 
             <div className="max-w-[80%] mx-auto mt-6 p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800 lg:ml-72">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
