@@ -14,7 +14,7 @@ function Header(params) {
             Vyapix
          </div>
      
-         {!params.islogin && <Login_btn open = {params.openLogin}  />}
+         {!params.islogin && <Login_btn open = {params.openLogin}  openAbout={params.openAbout} />}
          
       </header> 
    </>

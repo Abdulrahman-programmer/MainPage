@@ -3,18 +3,23 @@ import Header from "../components/Header";
 import Intro from "../components/Intro";
 import Login from "../components/Login";
 import SignUp from "../components/Signup";
+import About from "../components/About";
 
 
 function Before_logIn() {
     const [loginOrSignUp, setLoginOrSignUp] = useState(null);
     const islogin = (loginOrSignUp === "login");
     const isSignup = (loginOrSignUp === "signup");
+    const [aboutopen, setAboutopen] = useState(false);
     return (
         <div>
            <Header islogin = {false} 
            openLogin = {() => setLoginOrSignUp('login')}
-           openSignup ={() => setLoginOrSignUp('signup')}/>
-           <Intro openSignup ={() => setLoginOrSignUp('signup')}/>
+           openSignup ={() => setLoginOrSignUp('signup')}
+           openAbout = {() => setAboutopen(true)}
+           />
+           {aboutopen && <About close = {() => setAboutopen(false)}/>}
+            {!aboutopen && <Intro openSignup ={() => setLoginOrSignUp('signup')}/>}
            {islogin && <Login close = {()=> setLoginOrSignUp(null)} openSignup ={() => setLoginOrSignUp('signup')}/>}
            {isSignup && <SignUp
             close = {() => setLoginOrSignUp(null)}
