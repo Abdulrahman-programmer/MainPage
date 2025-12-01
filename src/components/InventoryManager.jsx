@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import BarcodeScanner from './BarcodeScanner';
 
 // set base URL for all axios requests
 axios.defaults.baseURL = 'https://inventoryonline.onrender.com';
@@ -59,6 +60,7 @@ function InventoryManager() {
     const [purchaseDate, setPurchaseDate] = useState('');
     const [expiryDate, setExpiryDate] = useState('');
     const [editingId, setEditingId] = useState(null);
+    const [scannerOpen, setScannerOpen] = useState(false);
 
 
   
@@ -207,9 +209,124 @@ function InventoryManager() {
         remove();
     };
 
+    const handleBarcodeScanned = async (scannedBarcode) => {
+        console.log('Scanned barcode:', scannedBarcode);
+        setBarcode(scannedBarcode);
+        
+        // Try to find existing product with this barcode using the specific API
+        try {
+            const response = await axios.get(`/api/products/barcode/${scannedBarcode}`);
+            const productBatches = response.data?.data || response.data || [];
+            
+            if (productBatches.length > 0) {
+                // Product exists, ask for quantity to add
+                const product = Array.isArray(productBatches) ? productBatches[0] : productBatches;
+                const normalizedProduct = normalizeItem(product);
+                
+                const quantityToAdd = prompt(
+                    `Product found: ${normalizedProduct.name}\nCurrent Quantity: ${normalizedProduct.qty}\n\nEnter quantity to add:`,
+                    '1'
+                );
+                
+                if (quantityToAdd && !isNaN(quantityToAdd) && Number(quantityToAdd) > 0) {
+                    try {
+                        // Update the existing product quantity using the correct API endpoint
+                        const updatedQuantity = Number(normalizedProduct.qty) + Number(quantityToAdd);
+                        
+                        await axios.put(`/api/products/${normalizedProduct.id}/quantity?quantity=${updatedQuantity}`);
+                        
+                        // Update local state
+                        setItems(prev => prev.map(item => 
+                            String(item.id) === String(normalizedProduct.id) 
+                                ? { ...item, qty: updatedQuantity, quantity: updatedQuantity }
+                                : item
+                        ));
+                        
+                        setError(null);
+                        alert(`Added ${quantityToAdd} units. New quantity: ${updatedQuantity}`);
+                    } catch (updateError) {
+                        console.error('Error updating product quantity:', updateError);
+                        setError('Failed to update product quantity on server');
+                        
+                        // Fallback: update local state only
+                        const updatedQuantity = Number(normalizedProduct.qty) + Number(quantityToAdd);
+                        setItems(prev => prev.map(item => 
+                            String(item.id) === String(normalizedProduct.id) 
+                                ? { ...item, qty: updatedQuantity, quantity: updatedQuantity }
+                                : item
+                        ));
+                        alert(`Added ${quantityToAdd} units locally. New quantity: ${updatedQuantity}`);
+                    }
+                } else if (quantityToAdd !== null) {
+                    setError('Please enter a valid positive number for quantity');
+                }
+            } else {
+                // No product found, create new
+                resetForm();
+                setBarcode(scannedBarcode);
+                // Auto-set today's date for new products
+                const today = new Date().toISOString().split('T')[0];
+                setPurchaseDate(today);
+                // Auto-set expiry date to 1 year from now
+                const nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                setExpiryDate(nextYear.toISOString().split('T')[0]);
+                
+                alert('New product detected. Please fill in the details below.');
+            }
+        } catch (error) {
+            console.warn('Error checking existing product:', error);
+            
+            // If API call fails, check if it's 404 (no product found) or other error
+            if (error.response?.status === 404) {
+                // No product found, create new
+                resetForm();
+                setBarcode(scannedBarcode);
+                // Auto-set today's date for new products
+                const today = new Date().toISOString().split('T')[0];
+                setPurchaseDate(today);
+                // Auto-set expiry date to 1 year from now
+                const nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                setExpiryDate(nextYear.toISOString().split('T')[0]);
+                
+                alert('New product detected. Please fill in the details below.');
+            } else {
+                setError('Error checking product database. Please try again.');
+            }
+        }
+        
+        setScannerOpen(false);
+    };
+
     return (
         <div className="max-w-[80%] mx-auto mt-6 p-4 bg-white rounded-lg shadow-sm dark:bg-gray-800 lg:ml-72">
+            {error && (
+                <div className="mb-4 p-3 bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-300 rounded-lg">
+                    {error}
+                </div>
+            )}
+            
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-6 gap-3 items-end">
+                <div className="md:col-span-2">
+                    <label className="block text-sm font-medium mb-1">Barcode</label>
+                    <div className="flex gap-2">
+                        <input 
+                            value={barcode} 
+                            onChange={(e) => setBarcode(e.target.value)} 
+                            className="flex-1 px-3 py-2 border rounded-md dark:bg-gray-700" 
+                            placeholder="Enter or scan barcode" 
+                        />
+                        <button
+                            type="button"
+                            onClick={() => setScannerOpen(true)}
+                            className="px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-500 text-sm"
+                            title="Scan Barcode"
+                        >
+                            📷
+                        </button>
+                    </div>
+                </div>
                 <div className="md:col-span-2">
                     <label className="block text-sm font-medium mb-1">Name</label>
                     <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-md dark:bg-gray-700" placeholder="Item name" />
@@ -255,6 +372,7 @@ function InventoryManager() {
                     <thead className="bg-gray-50 dark:bg-gray-700">
                         <tr>
                             <th className="px-4 py-2 text-left text-sm font-medium">#</th>
+                            <th className="px-4 py-2 text-left text-sm font-medium">Barcode</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Name</th>
                             <th className="px-4 py-2 text-left text-sm font-medium">Category</th>
                             <th className="px-4 py-2 text-right text-sm font-medium">Quantity</th>
@@ -268,7 +386,7 @@ function InventoryManager() {
                     <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-800 dark:divide-gray-700">
                         {items.length === 0 ? (
                             <tr>
-                                <td colSpan="9" className="px-4 py-6 text-center text-gray-500">
+                                <td colSpan="10" className="px-4 py-6 text-center text-gray-500">
                                     No items yet.
                                 </td>
                             </tr>
@@ -276,6 +394,7 @@ function InventoryManager() {
                             items.map((it, idx) => (
                                 <tr key={it.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-4 py-3 text-sm">{idx + 1}</td>
+                                    <td className="px-4 py-3 text-sm font-mono text-xs">{it.barcode || '-'}</td>
                                     <td className="px-4 py-3 text-sm">{it.name}</td>
                                     <td className="px-4 py-3 text-sm">{it.category || '-'}</td>
                                     <td className="px-4 py-3 text-sm text-right">{it.qty}</td>
@@ -318,6 +437,13 @@ function InventoryManager() {
                     )}
                 </table>
             </div>
+
+            <BarcodeScanner 
+                isOpen={scannerOpen}
+                onClose={() => setScannerOpen(false)}
+                onScanSuccess={handleBarcodeScanned}
+                title="Scan Product Barcode"
+            />
         </div>
     );
 }

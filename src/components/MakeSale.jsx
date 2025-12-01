@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import BarcodeScanner from './BarcodeScanner';
 
 axios.defaults.baseURL = 'https://inventoryonline.onrender.com';
 
@@ -15,6 +16,9 @@ export default function MakeSale(params) {
     const [selectedIds, setSelectedIds] = useState([]);
        const [quantities, setQuantities] = useState({});
     const [selectedCategory, setSelectedCategory] = useState('ALL');
+    const [scannerOpen, setScannerOpen] = useState(false);
+    const [barcodeInput, setBarcodeInput] = useState('');
+    const lastBarcodeProcessTime = useRef(0);
 
     // ----------- Helper FUNCTION for ID (fix mismatch issues) -----------
     const getProductId = (p) => String(p.id ?? p._id ?? p.productId ?? p.barcode);
@@ -25,6 +29,8 @@ export default function MakeSale(params) {
         setQuantities({});
         setSelectedCategory('ALL');
         setError(null);
+        setBarcodeInput('');
+        lastBarcodeProcessTime.current = 0;
     };
 
     const handleCancel = () => {
@@ -159,6 +165,76 @@ export default function MakeSale(params) {
         params.fetchOverviewData?.();
     };
 
+    // ----------- Barcode Scanning Functions -----------
+    const handleBarcodeScanned = (scannedBarcode) => {
+        console.log('Scanned barcode for sale:', scannedBarcode);
+        setBarcodeInput(scannedBarcode);
+        addProductByBarcode(scannedBarcode);
+        setScannerOpen(false);
+    };
+
+    const handleBarcodeInput = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            addProductByBarcode(barcodeInput);
+        }
+    };
+
+    const addProductByBarcode = (barcode) => {
+        if (!barcode.trim()) return;
+
+        // Debounce barcode processing to prevent multiple calls
+        const now = Date.now();
+        if ((now - lastBarcodeProcessTime.current) < 1000) {
+            return; // Skip if called within 1 second
+        }
+        lastBarcodeProcessTime.current = now;
+
+        // Find product by barcode
+        const product = products.find(p => 
+            (p.barcode || '').toString() === barcode.trim() ||
+            (p.bracode || '').toString() === barcode.trim()
+        );
+
+        if (product) {
+            const productId = getProductId(product);
+            
+            // Check if already selected
+            if (selectedIds.includes(productId)) {
+                // Increase quantity
+                const currentQty = quantities[productId] || 1;
+                const maxQty = Number(product.quantity || product.qty || 0);
+                
+                if (currentQty < maxQty) {
+                    setQuantities(prev => ({
+                        ...prev,
+                        [productId]: currentQty + 1
+                    }));
+                    setError(null);
+                } else {
+                    setError(`Maximum quantity reached for ${product.name} (${maxQty} available)`);
+                }
+            } else {
+                // Add new product
+                const maxQty = Number(product.quantity || product.qty || 0);
+                if (maxQty > 0) {
+                    setSelectedIds(prev => [...prev, productId]);
+                    setQuantities(prev => ({
+                        ...prev,
+                        [productId]: 1
+                    }));
+                    setError(null);
+                } else {
+                    setError(`Product ${product.name} is out of stock`);
+                }
+            }
+            
+            setBarcodeInput('');
+        } else {
+            setError(`Product not found with barcode: ${barcode}`);
+        }
+    };
+
     // ----------- Category List -----------
     const categories = Array.from(
         new Set(
@@ -212,6 +288,38 @@ export default function MakeSale(params) {
                                         <option key={c} value={c}>{c}</option>
                                     ))}
                                 </select>
+                            </div>
+                        </div>
+
+                        {/* Barcode Input Section */}
+                        <div className='mb-4 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg'>
+                            <div className='flex gap-2 items-end'>
+                                <div className='flex-1'>
+                                    <label className='block text-sm font-medium mb-1'>Quick Add by Barcode</label>
+                                    <input
+                                        type="text"
+                                        value={barcodeInput}
+                                        onChange={(e) => setBarcodeInput(e.target.value)}
+                                        onKeyPress={handleBarcodeInput}
+                                        placeholder="Enter barcode and press Enter"
+                                        className='w-full p-2 border rounded dark:bg-gray-600 dark:border-gray-500'
+                                    />
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => setScannerOpen(true)}
+                                    className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-500'
+                                    title="Scan Barcode"
+                                >
+                                    📷 Scan
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => addProductByBarcode(barcodeInput)}
+                                    className='px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500'
+                                >
+                                    Add
+                                </button>
                             </div>
                         </div>
 
@@ -297,6 +405,13 @@ export default function MakeSale(params) {
                     </div>
                 </div>
             )}
+
+            <BarcodeScanner 
+                isOpen={scannerOpen}
+                onClose={() => setScannerOpen(false)}
+                onScanSuccess={handleBarcodeScanned}
+                title="Scan Product for Sale"
+            />
 
         </div>
     );
