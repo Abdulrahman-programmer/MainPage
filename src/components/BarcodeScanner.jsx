@@ -13,6 +13,8 @@ const BarcodeScanner = ({
   const [isScanning, setIsScanning] = useState(false);
   const [lastScannedCode, setLastScannedCode] = useState('');
   const [scanResult, setScanResult] = useState('');
+  const [isProcessing, setIsProcessing] = useState(false);
+  const lastScanTimeRef = useRef(0);
 
   // Initialize scanner when modal opens
   useEffect(() => {
@@ -45,21 +47,30 @@ const BarcodeScanner = ({
         { facingMode: "environment" }, // Use back camera
         config,
         (decodedText, decodedResult) => {
-          // Prevent multiple scans of the same code
-          if (decodedText !== lastScannedCode) {
-            setLastScannedCode(decodedText);
-            setScanResult(`Scanned: ${decodedText}`);
-            
-            // Call the success callback
-            if (onScanSuccess) {
-              onScanSuccess(decodedText, decodedResult);
-            }
-
-            // Auto-close after successful scan
-            setTimeout(() => {
-              handleClose();
-            }, 1500);
+          const now = Date.now();
+          
+          // Prevent multiple scans - debounce with 2 second cooldown
+          if (isProcessing || 
+              decodedText === lastScannedCode || 
+              (now - lastScanTimeRef.current) < 2000) {
+            return;
           }
+
+          setIsProcessing(true);
+          setLastScannedCode(decodedText);
+          setScanResult(`Scanned: ${decodedText}`);
+          lastScanTimeRef.current = now;
+          
+          // Call the success callback
+          if (onScanSuccess) {
+            onScanSuccess(decodedText, decodedResult);
+          }
+
+          // Auto-close after successful scan
+          setTimeout(() => {
+            setIsProcessing(false);
+            handleClose();
+          }, 1500);
         },
         (errorMessage) => {
           // Only log actual errors, not "no QR code found"
@@ -92,6 +103,8 @@ const BarcodeScanner = ({
       setIsScanning(false);
       setScanResult('');
       setLastScannedCode('');
+      setIsProcessing(false);
+      lastScanTimeRef.current = 0;
     }
   };
 

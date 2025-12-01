@@ -213,27 +213,52 @@ function InventoryManager() {
         console.log('Scanned barcode:', scannedBarcode);
         setBarcode(scannedBarcode);
         
-        // Try to find existing product with this barcode
+        // Try to find existing product with this barcode using the specific API
         try {
-            const response = await axios.get(`/api/products?barcode=${scannedBarcode}`);
-            const products = response.data?.data || response.data || [];
+            const response = await axios.get(`/api/products/barcode/${scannedBarcode}`);
+            const productBatches = response.data?.data || response.data || [];
             
-            if (products.length > 0) {
-                const product = Array.isArray(products) ? products[0] : products;
+            if (productBatches.length > 0) {
+                // Product exists, ask for quantity to add
+                const product = Array.isArray(productBatches) ? productBatches[0] : productBatches;
                 const normalizedProduct = normalizeItem(product);
                 
-                // Ask user what to do with existing product
-                const action = window.confirm(
-                    `Product found!\n\nName: ${normalizedProduct.name}\nCategory: ${normalizedProduct.category}\nCurrent Quantity: ${normalizedProduct.qty}\nPrice: ₹${normalizedProduct.sellingPrice}\n\nClick OK to edit this product, or Cancel to create a new product with this barcode.`
+                const quantityToAdd = prompt(
+                    `Product found: ${normalizedProduct.name}\nCurrent Quantity: ${normalizedProduct.qty}\n\nEnter quantity to add:`,
+                    '1'
                 );
                 
-                if (action) {
-                    // Edit existing product
-                    handleEdit(normalizedProduct);
-                } else {
-                    // Just set the barcode for new product
-                    resetForm();
-                    setBarcode(scannedBarcode);
+                if (quantityToAdd && !isNaN(quantityToAdd) && Number(quantityToAdd) > 0) {
+                    try {
+                        // Update the existing product quantity using the correct API endpoint
+                        const updatedQuantity = Number(normalizedProduct.qty) + Number(quantityToAdd);
+                        
+                        await axios.put(`/api/products/${normalizedProduct.id}/quantity?quantity=${updatedQuantity}`);
+                        
+                        // Update local state
+                        setItems(prev => prev.map(item => 
+                            String(item.id) === String(normalizedProduct.id) 
+                                ? { ...item, qty: updatedQuantity, quantity: updatedQuantity }
+                                : item
+                        ));
+                        
+                        setError(null);
+                        alert(`Added ${quantityToAdd} units. New quantity: ${updatedQuantity}`);
+                    } catch (updateError) {
+                        console.error('Error updating product quantity:', updateError);
+                        setError('Failed to update product quantity on server');
+                        
+                        // Fallback: update local state only
+                        const updatedQuantity = Number(normalizedProduct.qty) + Number(quantityToAdd);
+                        setItems(prev => prev.map(item => 
+                            String(item.id) === String(normalizedProduct.id) 
+                                ? { ...item, qty: updatedQuantity, quantity: updatedQuantity }
+                                : item
+                        ));
+                        alert(`Added ${quantityToAdd} units locally. New quantity: ${updatedQuantity}`);
+                    }
+                } else if (quantityToAdd !== null) {
+                    setError('Please enter a valid positive number for quantity');
                 }
             } else {
                 // No product found, create new
@@ -246,18 +271,29 @@ function InventoryManager() {
                 const nextYear = new Date();
                 nextYear.setFullYear(nextYear.getFullYear() + 1);
                 setExpiryDate(nextYear.toISOString().split('T')[0]);
+                
+                alert('New product detected. Please fill in the details below.');
             }
         } catch (error) {
             console.warn('Error checking existing product:', error);
-            // If API call fails, just set the barcode
-            setBarcode(scannedBarcode);
-            // Auto-set today's date for new products
-            const today = new Date().toISOString().split('T')[0];
-            setPurchaseDate(today);
-            // Auto-set expiry date to 1 year from now
-            const nextYear = new Date();
-            nextYear.setFullYear(nextYear.getFullYear() + 1);
-            setExpiryDate(nextYear.toISOString().split('T')[0]);
+            
+            // If API call fails, check if it's 404 (no product found) or other error
+            if (error.response?.status === 404) {
+                // No product found, create new
+                resetForm();
+                setBarcode(scannedBarcode);
+                // Auto-set today's date for new products
+                const today = new Date().toISOString().split('T')[0];
+                setPurchaseDate(today);
+                // Auto-set expiry date to 1 year from now
+                const nextYear = new Date();
+                nextYear.setFullYear(nextYear.getFullYear() + 1);
+                setExpiryDate(nextYear.toISOString().split('T')[0]);
+                
+                alert('New product detected. Please fill in the details below.');
+            } else {
+                setError('Error checking product database. Please try again.');
+            }
         }
         
         setScannerOpen(false);

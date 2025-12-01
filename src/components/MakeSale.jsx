@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 import BarcodeScanner from './BarcodeScanner';
 
@@ -18,6 +18,7 @@ export default function MakeSale(params) {
     const [selectedCategory, setSelectedCategory] = useState('ALL');
     const [scannerOpen, setScannerOpen] = useState(false);
     const [barcodeInput, setBarcodeInput] = useState('');
+    const lastBarcodeProcessTime = useRef(0);
 
     // ----------- Helper FUNCTION for ID (fix mismatch issues) -----------
     const getProductId = (p) => String(p.id ?? p._id ?? p.productId ?? p.barcode);
@@ -29,6 +30,7 @@ export default function MakeSale(params) {
         setSelectedCategory('ALL');
         setError(null);
         setBarcodeInput('');
+        lastBarcodeProcessTime.current = 0;
     };
 
     const handleCancel = () => {
@@ -180,6 +182,13 @@ export default function MakeSale(params) {
 
     const addProductByBarcode = (barcode) => {
         if (!barcode.trim()) return;
+
+        // Debounce barcode processing to prevent multiple calls
+        const now = Date.now();
+        if ((now - lastBarcodeProcessTime.current) < 1000) {
+            return; // Skip if called within 1 second
+        }
+        lastBarcodeProcessTime.current = now;
 
         // Find product by barcode
         const product = products.find(p => 
