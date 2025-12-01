@@ -19,28 +19,28 @@ function SignUp(params) {
             const form = new FormData(e.target);
             const payload = Object.fromEntries(form.entries());
             
+console.log(payload);
 
             // adjust URL to your signup endpoint
             const response = await axios.post("https://inventoryonline.onrender.com/api/auth/register", payload);
+
 
             if (response.status >= 200 && response.status < 300) {
                 // close modal if provided
                 params.close?.();
                 // navigate to afterlogin page and pass name/email in state
-                setLoading(false);
                 
-                localStorage.setItem("userEmail", payload.email);
-                localStorage.setItem("userName", payload.Name);
+                
                 const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email: payload.email, password: payload.password });
                 localStorage.setItem("authToken", res.data.token);
-                navigate("/afterlogin", { state: { name: payload?.Name || "", email: payload?.email || "" } });
+                navigate("/afterlogin", { state: { name: payload?.username || "", email: payload?.email || "" } });
             } else {
-                console.error("Signup failed:", response);
                 alert("Signup failed. Please try again.");
             }
         } catch (err) {
-            console.error("Signup error:", err);
             alert(err?.response?.data?.message || "An error occurred during signup.");
+        }finally{
+                setLoading(false);
         }
     };
 
@@ -58,7 +58,7 @@ function SignUp(params) {
                 <input type="text" name="gst" id="gstNo" required className="ip" />
 
                 <label htmlFor="Name" className="label">Name</label>
-                <input type="text" name="Name" id="name" required className="ip" />
+                <input type="text" name="username" id="name" required className="ip" />
 
                 <label htmlFor="email" className="label">Email</label>
                 <input type="email" name="email" id="email" required className="ip" />

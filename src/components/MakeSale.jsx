@@ -260,7 +260,7 @@ export default function MakeSale(params) {
             {error && <p style={{ marginTop: '10px', color: 'red' }}>Error: {error}</p>}
 
             {isModalOpen && (
-                <div className='fixed flex justify-center items-center z-9999 top-0 left-0 w-full h-full bg-black/30 dark:text-amber-50'>
+                <div className='fixed flex justify-center items-center z-100 top-0 left-0 w-full h-full bg-black/30 dark:text-amber-50'>
                     <div className='bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-11/12 max-w-2xl'
                          style={{ maxHeight: '80vh', overflowY: 'auto' }}>
                         

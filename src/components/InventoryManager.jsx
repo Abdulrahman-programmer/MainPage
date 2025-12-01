@@ -358,7 +358,7 @@ function InventoryManager() {
                             items.map((it, idx) => (
                                 <tr key={it.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
                                     <td className="px-4 py-3 text-sm">{idx + 1}</td>
-                                    <td className="px-4 py-3 text-sm font-mono text-xs">{it.barcode || '-'}</td>
+                                    <td className="px-4 py-3 text-sm font-mono">{it.barcode || '-'}</td>
                                     <td className="px-4 py-3 text-sm">{it.name}</td>
                                     <td className="px-4 py-3 text-sm">{it.category || '-'}</td>
                                     <td className="px-4 py-3 text-sm text-right">{it.qty}</td>
@@ -393,6 +393,7 @@ function InventoryManager() {
                                 <td className="px-4 py-2 text-right text-sm font-medium">
                                     ₹{items.reduce((s, it) => s + Number(it.sellingPrice) * Number(it.qty), 0).toFixed(2)}
                                 </td>
+                                <td />
                                 <td />
                                 <td />
                                 <td />
