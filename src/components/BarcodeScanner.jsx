@@ -58,7 +58,7 @@ const BarcodeScanner = ({
             // Auto-close after successful scan
             setTimeout(() => {
               handleClose();
-            }, 1500);
+            }, 500);
           }
         },
         (errorMessage) => {

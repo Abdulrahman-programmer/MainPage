@@ -28,8 +28,8 @@ function SignUp(params) {
             if (response.status >= 200 && response.status < 300) {
                 // close modal if provided
                 params.close?.();
+
                 // navigate to afterlogin page and pass name/email in state
-                
                 sessionStorage.setItem("userName",payload.username);
                 sessionStorage.setItem("userEmail",payload.email);
                 const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email: payload.email, password: payload.password });
