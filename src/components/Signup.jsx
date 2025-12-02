@@ -19,7 +19,7 @@ function SignUp(params) {
             const form = new FormData(e.target);
             const payload = Object.fromEntries(form.entries());
             
-console.log(payload);
+            
 
             // adjust URL to your signup endpoint
             const response = await axios.post("https://inventoryonline.onrender.com/api/auth/register", payload);
@@ -30,7 +30,8 @@ console.log(payload);
                 params.close?.();
                 // navigate to afterlogin page and pass name/email in state
                 
-                
+                sessionStorage.setItem("userName",payload.username);
+                sessionStorage.setItem("email",payload.email);
                 const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email: payload.email, password: payload.password });
                 localStorage.setItem("authToken", res.data.token);
                 navigate("/afterlogin", { state: { name: payload?.username || "", email: payload?.email || "" } });
