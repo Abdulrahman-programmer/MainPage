@@ -31,7 +31,7 @@ function SignUp(params) {
                 // navigate to afterlogin page and pass name/email in state
                 
                 sessionStorage.setItem("userName",payload.username);
-                sessionStorage.setItem("email",payload.email);
+                sessionStorage.setItem("userEmail",payload.email);
                 const res = await axios.post("https://inventoryonline.onrender.com/api/auth/login", { email: payload.email, password: payload.password });
                 localStorage.setItem("authToken", res.data.token);
                 navigate("/afterlogin", { state: { name: payload?.username || "", email: payload?.email || "" } });

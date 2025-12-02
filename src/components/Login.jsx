@@ -33,12 +33,13 @@ function Login(params) {
   sessionStorage.setItem("userName", name || "");
   sessionStorage.setItem("userEmail", userEmail || email);
   
-  setLoading(false);
   navigate("/afterlogin");
     } catch (err) {
       console.error("Login error:", err);
       const msg = err.response?.data?.message || err.message || "Login failed";
       alert(msg);
+    }finally{
+      setLoading(false);
     }
   };
 

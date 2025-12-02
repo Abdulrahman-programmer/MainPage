@@ -25,8 +25,8 @@ export default function OutofStock(params) {
     }, []);
 
     return (
-        <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
-        <div className="fixed min-w-md min-h-1/2 g top-50 bg-white p-4 m-4 rounded-lg shadow-md lg:ml-72 dark:bg-gray-800 dark:text-white z-50">
+        <div className="fixed  inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed w-md h-1/2 max-w-[80vw] top-50 bg-white p-4 m-4 rounded-lg shadow-md lg:ml-72 dark:bg-gray-800 dark:text-white z-50">
             <h2 className="text-2xl text-center font-bold mb-4 ml-2 lg:ml-4">Out of Stock Items</h2>
             <button onClick={()=> params.close()} className="absolute top-1 right-1  rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
                 <img src={closeIcon} alt="Close" />
